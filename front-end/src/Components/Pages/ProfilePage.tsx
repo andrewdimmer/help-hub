@@ -17,6 +17,8 @@ const ProfilePage: React.FunctionComponent<PageProps> = ({
   forceReloadUserData,
   handleLoadUserData,
   classes,
+  events,
+  setEvents,
 }) => {
   return (
     <Fragment>
@@ -36,6 +38,8 @@ const ProfilePage: React.FunctionComponent<PageProps> = ({
             setLoadingMessage={setLoadingMessage}
             setNotification={setNotification}
             classes={classes}
+            events={events}
+            setEvents={setEvents}
           />
         </Grid>
         <Grid item xs={12} sm={12} md={8} lg={9}>
@@ -48,6 +52,8 @@ const ProfilePage: React.FunctionComponent<PageProps> = ({
             setLoadingMessage={setLoadingMessage}
             setNotification={setNotification}
             classes={classes}
+            events={events}
+            setEvents={setEvents}
           />
           <ViewEditUserEmail
             currentUser={currentUser}
@@ -58,6 +64,8 @@ const ProfilePage: React.FunctionComponent<PageProps> = ({
             setLoadingMessage={setLoadingMessage}
             setNotification={setNotification}
             classes={classes}
+            events={events}
+            setEvents={setEvents}
           />
           <ViewEditUserPhone
             currentUser={currentUser}
@@ -68,6 +76,8 @@ const ProfilePage: React.FunctionComponent<PageProps> = ({
             setLoadingMessage={setLoadingMessage}
             setNotification={setNotification}
             classes={classes}
+            events={events}
+            setEvents={setEvents}
           />
           <ViewEditUserPassword
             currentUser={currentUser}
@@ -78,6 +88,8 @@ const ProfilePage: React.FunctionComponent<PageProps> = ({
             setLoadingMessage={setLoadingMessage}
             setNotification={setNotification}
             classes={classes}
+            events={events}
+            setEvents={setEvents}
           />
           <ViewEditUserZipcode
             currentUser={currentUser}
@@ -88,6 +100,8 @@ const ProfilePage: React.FunctionComponent<PageProps> = ({
             setLoadingMessage={setLoadingMessage}
             setNotification={setNotification}
             classes={classes}
+            events={events}
+            setEvents={setEvents}
           />
         </Grid>
       </Grid>

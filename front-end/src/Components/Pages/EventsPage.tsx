@@ -1,27 +1,29 @@
-import React, { Fragment } from "react";
 import {
-  Box,
-  Grid,
-  Typography,
   Button,
-  Card,
-  AppBar,
-  Tabs,
-  Tab,
-  Modal,
+  Checkbox,
+  Container,
   Dialog,
-  DialogTitle,
+  DialogActions,
   DialogContent,
   DialogContentText,
-  TextField,
-  DialogActions,
+  DialogTitle,
   FormControlLabel,
-  Checkbox,
+  Grid,
+  TextField,
+  Typography,
 } from "@material-ui/core";
-import Event from "../Layouts/Event";
+import React, { Fragment } from "react";
+import { PageProps } from ".";
 import categories from "../Content/Categories";
+import EventInfo from "../Layouts/EventInfo";
 
-const EventsPage: React.FunctionComponent = () => {
+const EventsPage: React.FunctionComponent<PageProps> = ({
+  classes,
+  currentUserProfile,
+  events,
+  setEvents,
+  setNotification,
+}) => {
   const [open, setOpen] = React.useState(false);
   const [radius, setRadius] = React.useState<string>();
   const [zip, setZip] = React.useState<string>();
@@ -43,34 +45,58 @@ const EventsPage: React.FunctionComponent = () => {
   };
   return (
     <Fragment>
-      <Box mx="5%" my="2.5%">
-        <Card style={{ padding: "1.5%" }}>
-          <Grid container direction="row">
-            <Grid item xs={11}>
-              <Typography variant="h4" style={{ marginBottom: "1%" }}>
-                Events near you
-              </Typography>
-            </Grid>
-            <Grid item xs={1}>
-              <Button variant="contained" color="primary" onClick={handleOpen}>
-                Filter
-              </Button>
-            </Grid>
-          </Grid>
-          <Grid container direction="column" spacing={4}>
-            <Grid item xs={12}>
-              <Box>
-                <Event
-                  eventName="Cyber Starters"
-                  eventDesciption="Help senior citizens with new technology! Work with seniors one on one to answer their questions."
-                  eventDateTime="May 5th, 2020, 6:00PM"
-                  eventLocation="6495 Clarkston Rd, Village of Clarkston, MI 48346"
-                ></Event>
-              </Box>
-            </Grid>
-          </Grid>
-        </Card>
-      </Box>
+      <Container className={classes.pageTitle}>
+        <Typography variant="h3">Volunteer Here!</Typography>
+      </Container>
+      <Button
+        color="primary"
+        fullWidth
+        variant="contained"
+        size="large"
+        className={classes.margined}
+        onClick={handleOpen}
+      >
+        Filter
+      </Button>
+      {events.map(
+        (
+          {
+            eventName,
+            eventDescription,
+            contactInfo,
+            categories,
+            startDate,
+            startTime,
+            endDate,
+            endTime,
+            address,
+            city,
+            state,
+            zip,
+            user,
+          },
+          index
+        ) => {
+          return (
+            <EventInfo
+              eventName={eventName}
+              eventDesciption={eventDescription}
+              eventDateTime={
+                startDate + " " + startTime + " - " + endDate + " " + endTime
+              }
+              eventContact={contactInfo}
+              eventCategories={categories}
+              eventLocation={address + ", " + city + ", " + state + " " + zip}
+              classes={classes}
+              number={index}
+              events={events}
+              setEvents={setEvents}
+              setNotification={setNotification}
+            />
+          );
+        }
+      )}
+
       <Dialog
         open={open}
         onClose={handleClose}

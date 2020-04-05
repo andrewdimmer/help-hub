@@ -22,6 +22,8 @@ export declare interface PageProps {
   currentUser: firebase.User | null;
   currentUserProfile: UserProfile | null;
   classes: any;
+  events: any[];
+  setEvents: (events: any[]) => void;
 }
 
 export declare interface PageListForMenuItem {

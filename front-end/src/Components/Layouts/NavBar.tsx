@@ -7,25 +7,26 @@ import {
   MenuItem,
   Theme,
   Toolbar,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import Brightness4Icon from "@material-ui/icons/Brightness4";
 import Brightness7Icon from "@material-ui/icons/Brightness7";
 import React from "react";
 import { UserProfile } from "../../Scripts/firebaseGetUserProfile";
+import SquareAvatar from "../Misc/SquareAvatar";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      flexGrow: 1
+      flexGrow: 1,
     },
     menuButton: {
-      marginRight: theme.spacing(2)
+      marginRight: theme.spacing(2),
     },
     title: {
-      flexGrow: 1
-    }
+      flexGrow: 1,
+    },
   })
 );
 
@@ -42,7 +43,7 @@ const NavBar: React.FunctionComponent<NavBarProps> = ({
   toggleTheme,
   currentUserProfile,
   setPageKey,
-  pageTitle
+  pageTitle,
 }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -81,19 +82,40 @@ const NavBar: React.FunctionComponent<NavBarProps> = ({
               onClick={handleMenu}
               color="inherit"
             >
-              <AccountCircleIcon />
+              {currentUserProfile ? (
+                <div style={{ width: "24px", height: "24px" }}>
+                  <SquareAvatar
+                    alt={
+                      currentUserProfile?.displayName
+                        ? currentUserProfile.displayName
+                        : ""
+                    }
+                    src={
+                      currentUserProfile?.photoURL
+                        ? currentUserProfile.photoURL
+                        : ""
+                    }
+                    centerInContainer={true}
+                    maxHeightPercentageOfScreen={50}
+                    maxWidthPercentageOfParent={100}
+                    maxWidthPercentageOfScreen={50}
+                  />
+                </div>
+              ) : (
+                <AccountCircleIcon />
+              )}
             </IconButton>
             <Menu
               id="menu-appbar"
               anchorEl={anchorEl}
               anchorOrigin={{
                 vertical: "top",
-                horizontal: "right"
+                horizontal: "right",
               }}
               keepMounted
               transformOrigin={{
                 vertical: "top",
-                horizontal: "right"
+                horizontal: "right",
               }}
               open={open}
               onClose={handleClose}

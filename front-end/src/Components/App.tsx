@@ -3,7 +3,7 @@ import React, { Fragment } from "react";
 import { firebaseApp } from "../Scripts/firebaseConfig";
 import {
   getUserProfileDatabase,
-  UserProfile
+  UserProfile,
 } from "../Scripts/firebaseGetUserProfile";
 import { styles } from "../Styles";
 import NavBar from "./Layouts/NavBar";
@@ -20,7 +20,7 @@ const App: React.FunctionComponent<AppProps> = ({ theme, toggleTheme }) => {
   const [notification, setNotification] = React.useState<NotificationMessage>({
     type: "info",
     message: "",
-    open: false
+    open: false,
   });
   const [loadingMessage, setLoadingMessage] = React.useState<string>("");
   const [pageKey, setPageKey] = React.useState<string>("home");
@@ -29,9 +29,10 @@ const App: React.FunctionComponent<AppProps> = ({ theme, toggleTheme }) => {
   );
   const [
     currentUserProfile,
-    setCurrentUserProfile
+    setCurrentUserProfile,
   ] = React.useState<UserProfile | null>(null);
   const [reloadUserData, setReloadUserData] = React.useState<boolean>(true);
+  const [events, setEvents] = React.useState<any>([]);
 
   const PageContent = getPageComponent(pageKey);
   const classes = styles();
@@ -43,7 +44,7 @@ const App: React.FunctionComponent<AppProps> = ({ theme, toggleTheme }) => {
   const handleLoadUserData = (userId: string) => {
     if (userId) {
       getUserProfileDatabase(userId)
-        .then(data => {
+        .then((data) => {
           setCurrentUserProfile(data);
         })
         .catch(() => {
@@ -56,7 +57,7 @@ const App: React.FunctionComponent<AppProps> = ({ theme, toggleTheme }) => {
     if (reloadUserData) {
       const oneTimeLoadListener = firebaseApp
         .auth()
-        .onAuthStateChanged(user => {
+        .onAuthStateChanged((user) => {
           if (user) {
             setCurrentUser(user);
             handleLoadUserData(user?.uid);
@@ -91,6 +92,8 @@ const App: React.FunctionComponent<AppProps> = ({ theme, toggleTheme }) => {
           currentUser={currentUser}
           currentUserProfile={currentUserProfile}
           classes={classes}
+          events={events}
+          setEvents={setEvents}
         />
         {pageKey !== "home" && (
           <Button

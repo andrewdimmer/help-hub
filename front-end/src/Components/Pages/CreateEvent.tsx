@@ -18,6 +18,8 @@ const CreateEvent: React.FunctionComponent<PageProps> = ({
   currentUserProfile,
   setNotification,
   handleLoadUserData,
+  events,
+  setEvents,
 }) => {
   const [eventName, setEventName] = React.useState<string>("");
   const [eventDescription, setEventDescription] = React.useState<string>("");
@@ -118,6 +120,36 @@ const CreateEvent: React.FunctionComponent<PageProps> = ({
   };
 
   const saveEvent = () => {
+    const newEvents = events.concat([]);
+    for (const time of dateTimes) {
+      newEvents.push({
+        eventName,
+        eventDescription,
+        contactInfo: contactInfo,
+        categories: categorySelections
+          .toString()
+          .substring(1, categorySelections.toString().length - 1),
+        startDate: time.startDate,
+        startTime: time.startTime,
+        endDate: time.endDate,
+        endTime: time.endTime,
+        address: time.address,
+        city: time.city,
+        state: time.state,
+        zip: time.zip,
+        user: null,
+      });
+    }
+    setEvents(newEvents);
+    handleClearData();
+    setNotification({
+      type: "success",
+      message: "Event Created Successfully!",
+      open: true,
+    });
+  };
+
+  /* const saveEvent = () => {
     if (currentUserProfile) {
       createNewEventDatabase({
         organizationId: currentUserProfile.userId,
@@ -162,7 +194,7 @@ const CreateEvent: React.FunctionComponent<PageProps> = ({
         open: true,
       });
     }
-  };
+  }; */
 
   const handleClearData = () => {
     setCategorySelections([]);
