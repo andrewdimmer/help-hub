@@ -1,12 +1,12 @@
 import {
   allSuccessful,
-  allSuccessfulResponse
+  allSuccessfulResponse,
 } from "../../Helpers/allSuccessful";
 import { logAndReturnFalse } from "../../Helpers/logErrors";
 import firebaseApp from "../firebaseConfig";
 import {
   addEmailToUserIdMapping,
-  removeEmailToUserIdMapping
+  removeEmailToUserIdMapping,
 } from "./userInformationMappings";
 import * as functions from "firebase-functions";
 
@@ -191,6 +191,50 @@ const updatePhotoUrlDatabaseHelper = (
       .collection("users")
       .doc(userId)
       .update({ photoUrl: newPhotoUrl })
+      .then(() => true)
+      .catch(logAndReturnFalse)
+  );
+
+  return allSuccessful(promises);
+};
+
+// Start writing Firebase Functions
+// https://firebase.google.com/docs/functions/typescript
+export const updateZipcodeDatabase = functions.https.onRequest(
+  (request, response) => {
+    response.setHeader("Access-Control-Allow-Origin", "*");
+    const { userId, newZipcode } = JSON.parse(request.body) as {
+      userId: string;
+      newZipcode: string;
+    };
+
+    allSuccessfulResponse(
+      [updateZipcodeDatabaseHelper(userId, newZipcode)],
+      response
+    );
+  }
+);
+
+/**
+ * updateZipcodeDatabaseHelper
+ * @description Updates the main User Object in the "users" collection, and all mappings in the database when the zipcode is changed.
+ * @param userId The userId of the user that is being updated.
+ * @param newZipcode The new zipcode to set.
+ * @returns true if all the updates were made without errors; false otherwise.
+ */
+const updateZipcodeDatabaseHelper = (
+  userId: string,
+  newZipcode: string
+): Promise<boolean> => {
+  const promises = [];
+
+  // Update the zipcode in the main User Object in the "users" collection
+  promises.push(
+    firebaseApp
+      .firestore()
+      .collection("users")
+      .doc(userId)
+      .update({ zipcode: newZipcode })
       .then(() => true)
       .catch(logAndReturnFalse)
   );

@@ -12,26 +12,27 @@ export const createNewUserDatabaseObjects = (userData: {
   email: string;
   phone: string;
   photoUrl: string;
+  zipcode: string;
 }): Promise<boolean> => {
   return ky
     .post(
       "https://us-central1-cathacksvi-gcp.cloudfunctions.net/create_new_user",
       {
-        body: JSON.stringify(userData)
+        body: JSON.stringify(userData),
       }
     )
-    .then(results =>
+    .then((results) =>
       results
         .text()
         .then(
-          text => text.length === "true".length && text.indexOf("true") === 0
+          (text) => text.length === "true".length && text.indexOf("true") === 0
         )
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
           return false;
         })
     )
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       return false;
     });

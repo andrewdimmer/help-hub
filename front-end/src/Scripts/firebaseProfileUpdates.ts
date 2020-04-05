@@ -8,21 +8,21 @@ export const updateDisplayNameDatabase = (
     .post(
       "https://us-central1-cathacksvi-gcp.cloudfunctions.net/update_display_name_database",
       {
-        body: JSON.stringify({ userId, newDisplayName })
+        body: JSON.stringify({ userId, newDisplayName }),
       }
     )
-    .then(results =>
+    .then((results) =>
       results
         .text()
         .then(
-          text => text.length === "true".length && text.indexOf("true") === 0
+          (text) => text.length === "true".length && text.indexOf("true") === 0
         )
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
           return false;
         })
     )
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       return false;
     });
@@ -37,21 +37,21 @@ export const updateEmailDatabase = (
     .post(
       "https://us-central1-cathacksvi-gcp.cloudfunctions.net/update_email_database",
       {
-        body: JSON.stringify({ userId, oldEmail, newEmail })
+        body: JSON.stringify({ userId, oldEmail, newEmail }),
       }
     )
-    .then(results =>
+    .then((results) =>
       results
         .text()
         .then(
-          text => text.length === "true".length && text.indexOf("true") === 0
+          (text) => text.length === "true".length && text.indexOf("true") === 0
         )
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
           return false;
         })
     )
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       return false;
     });
@@ -65,21 +65,21 @@ export const updatePhoneDatabase = (
     .post(
       "https://us-central1-cathacksvi-gcp.cloudfunctions.net/update_phone_database",
       {
-        body: JSON.stringify({ userId, newPhone })
+        body: JSON.stringify({ userId, newPhone }),
       }
     )
-    .then(results =>
+    .then((results) =>
       results
         .text()
         .then(
-          text => text.length === "true".length && text.indexOf("true") === 0
+          (text) => text.length === "true".length && text.indexOf("true") === 0
         )
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
           return false;
         })
     )
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       return false;
     });
@@ -93,21 +93,49 @@ export const updatePhotoUrlDatabase = (
     .post(
       "https://us-central1-cathacksvi-gcp.cloudfunctions.net/update_photo_url_database",
       {
-        body: JSON.stringify({ userId, newPhotoUrl })
+        body: JSON.stringify({ userId, newPhotoUrl }),
       }
     )
-    .then(results =>
+    .then((results) =>
       results
         .text()
         .then(
-          text => text.length === "true".length && text.indexOf("true") === 0
+          (text) => text.length === "true".length && text.indexOf("true") === 0
         )
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
           return false;
         })
     )
-    .catch(err => {
+    .catch((err) => {
+      console.log(err);
+      return false;
+    });
+};
+
+export const updateZipcodeDatabase = (
+  userId: string,
+  newZipcode: string
+): Promise<boolean> => {
+  return ky
+    .post(
+      "https://us-central1-cathacksvi-gcp.cloudfunctions.net/update_zipcode_database",
+      {
+        body: JSON.stringify({ userId, newZipcode }),
+      }
+    )
+    .then((results) =>
+      results
+        .text()
+        .then(
+          (text) => text.length === "true".length && text.indexOf("true") === 0
+        )
+        .catch((err) => {
+          console.log(err);
+          return false;
+        })
+    )
+    .catch((err) => {
       console.log(err);
       return false;
     });

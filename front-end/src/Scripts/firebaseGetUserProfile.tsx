@@ -6,6 +6,7 @@ export declare interface UserProfile {
   email: string;
   phoneNumber: string;
   photoURL: string;
+  zipcode: string;
 }
 
 export const getUserProfileDatabase = (
@@ -15,19 +16,19 @@ export const getUserProfileDatabase = (
     .post(
       "https://us-central1-cathacksvi-gcp.cloudfunctions.net/get_user_profile_database",
       {
-        body: userId
+        body: userId,
       }
     )
-    .then(results =>
+    .then((results) =>
       results
         .json()
-        .then(json => json)
-        .catch(err => {
+        .then((json) => json)
+        .catch((err) => {
           console.log(err);
           return null;
         })
     )
-    .catch(err => {
+    .catch((err) => {
       console.log(err);
       return null;
     });

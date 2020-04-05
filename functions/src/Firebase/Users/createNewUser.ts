@@ -1,8 +1,5 @@
 import * as functions from "firebase-functions";
-import {
-  allSuccessful,
-  allSuccessfulResponse
-} from "../../Helpers/allSuccessful";
+import { allSuccessfulResponse } from "../../Helpers/allSuccessful";
 import { logAndReturnFalse } from "../../Helpers/logErrors";
 import firebaseApp from "../firebaseConfig";
 import { addEmailToUserIdMapping } from "./userInformationMappings";
@@ -59,12 +56,7 @@ const createNewUserUserObject = (
     .collection("users")
     .doc(userId)
     .set({ userId, displayName, email, phone, photoUrl })
-    .then(() => {
-      return allSuccessful([
-        createNewUserSubcollection(userId, "events"),
-        createNewUserSubcollection(userId, "organizations")
-      ]);
-    })
+    .then(() => true)
     .catch(logAndReturnFalse);
 };
 
@@ -75,7 +67,7 @@ const createNewUserUserObject = (
  * @param subcollectionName The name of the subcollection to be added.
  * @returns true if the subcollection was created without any errors; false otherwise.
  */
-const createNewUserSubcollection = (
+/* const createNewUserSubcollection = (
   userId: string,
   subcollectionName: string
 ): Promise<boolean> => {
@@ -91,3 +83,4 @@ const createNewUserSubcollection = (
     })
     .catch(logAndReturnFalse);
 };
+*/
