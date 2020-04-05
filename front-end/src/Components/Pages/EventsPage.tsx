@@ -23,6 +23,11 @@ import categories from "../Content/Categories";
 
 const EventsPage: React.FunctionComponent = () => {
   const [open, setOpen] = React.useState(false);
+  const [zip, setZip] = React.useState<string>();
+
+  const handleZipChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setZip(event.target.value);
+  };
 
   const handleOpen = () => {
     setOpen(true);
@@ -91,6 +96,16 @@ const EventsPage: React.FunctionComponent = () => {
                 </Grid>
               );
             })}
+            <Grid item>
+              <TextField
+                id="zip"
+                label="Zip Code"
+                variant="outlined"
+                fullWidth
+                defaultValue={zip}
+                onChange={handleZipChange}
+              />
+            </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
