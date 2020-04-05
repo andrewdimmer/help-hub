@@ -9,8 +9,6 @@ import HomePage from "./HomePage";
 import LoginPage from "./LoginPage";
 import LogoutPage from "./LogoutPage";
 import ProfilePage from "./ProfilePage";
-import EventsPage from "./EventsPage";
-import CreateEvent from "./CreateEvent";
 import { UserProfile } from "../../Scripts/firebaseGetUserProfile";
 
 export declare interface PageProps {
@@ -45,7 +43,7 @@ const pageList: PageListItem[] = [
     menuIcon: HomeIcon,
     displaySignedIn: true,
     displaySignedOut: true,
-    component: HomePage,
+    component: HomePage
   },
   {
     key: "login",
@@ -54,7 +52,7 @@ const pageList: PageListItem[] = [
     menuIcon: ExitToAppIcon,
     displaySignedIn: false,
     displaySignedOut: true,
-    component: LoginPage,
+    component: LoginPage
   },
   {
     key: "profile",
@@ -63,25 +61,7 @@ const pageList: PageListItem[] = [
     menuIcon: AccountCircleIcon,
     displaySignedIn: true,
     displaySignedOut: false,
-    component: ProfilePage,
-  },
-  {
-    key: "events",
-    title: "Events",
-    menuLabel: "Events",
-    menuIcon: ExitToAppIcon,
-    displaySignedIn: true,
-    displaySignedOut: false,
-    component: EventsPage,
-  },
-  {
-    key: "organizations",
-    title: "Organizations",
-    menuLabel: "Organizations",
-    menuIcon: ExitToAppIcon,
-    displaySignedIn: true,
-    displaySignedOut: false,
-    component: CreateEvent,
+    component: ProfilePage
   },
   {
     key: "logout",
@@ -90,8 +70,8 @@ const pageList: PageListItem[] = [
     menuIcon: ExitToAppIcon,
     displaySignedIn: true,
     displaySignedOut: false,
-    component: LogoutPage,
-  },
+    component: LogoutPage
+  }
 ];
 
 const pageObject = pageList.reduce((pageObject, pageListItem) => {
