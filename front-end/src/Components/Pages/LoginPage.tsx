@@ -11,7 +11,7 @@ const LoginPage: React.FunctionComponent<PageProps> = ({
   forceReloadUserData,
   handleLoadUserData,
   currentUser,
-  classes
+  classes,
 }) => {
   const newUserCallback = (authResult: firebase.auth.UserCredential) => {
     if (authResult.user) {
@@ -22,16 +22,17 @@ const LoginPage: React.FunctionComponent<PageProps> = ({
         displayName: user.displayName ? user.displayName : "",
         email: user.email ? user.email : "",
         phone: user.phoneNumber ? user.phoneNumber : "",
-        photoUrl: user.photoURL ? user.photoURL : ""
+        photoUrl: user.photoURL ? user.photoURL : "",
+        zipcode: "",
       })
-        .then(value => {
+        .then((value) => {
           if (value) {
             setPageKey("profile");
             setNotification({
               type: "info",
               message:
                 "Almost there! Please complete the form below to finish creating your account.",
-              open: true
+              open: true,
             });
             handleLoadUserData(user.uid);
             forceReloadUserData();
@@ -41,19 +42,19 @@ const LoginPage: React.FunctionComponent<PageProps> = ({
               type: "error",
               message:
                 "Unable to finish creating your account. Please try again later.",
-              open: true
+              open: true,
             });
             setPageKey("logout");
             setLoadingMessage("");
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
           setNotification({
             type: "error",
             message:
               "Unable to finish creating your account. Please try again later.",
-            open: true
+            open: true,
           });
           setPageKey("logout");
           setLoadingMessage("");
@@ -63,7 +64,7 @@ const LoginPage: React.FunctionComponent<PageProps> = ({
         type: "error",
         message:
           "Unable to finish creating your account. Please try again later.",
-        open: true
+        open: true,
       });
     }
   };
@@ -75,7 +76,7 @@ const LoginPage: React.FunctionComponent<PageProps> = ({
     setNotification({
       type: "success",
       message: "Successfully Signed In",
-      open: true
+      open: true,
     });
   };
 
