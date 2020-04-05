@@ -10,7 +10,7 @@ const ViewEditUserPhone: React.FunctionComponent<PageProps> = ({
   currentUserProfile,
   setNotification,
   handleLoadUserData,
-  classes
+  classes,
 }) => {
   const [phone, setPhone] = React.useState<string>(
     currentUserProfile?.phoneNumber ? currentUserProfile.phoneNumber : ""
@@ -35,12 +35,12 @@ const ViewEditUserPhone: React.FunctionComponent<PageProps> = ({
   const savePhone = () => {
     if (currentUserProfile) {
       updatePhoneDatabase(currentUserProfile.userId, phone)
-        .then(value => {
+        .then((value) => {
           if (value) {
             setNotification({
               type: "success",
               message: "Phone Number Updated Successfully!",
-              open: true
+              open: true,
             });
             handleLoadUserData(currentUserProfile.userId);
             cancelEditing();
@@ -49,26 +49,27 @@ const ViewEditUserPhone: React.FunctionComponent<PageProps> = ({
               type: "warning",
               message:
                 "Something may have gone wrong while updating your phone number. It should fix itself, but if your new phone number is not visiable after a few minutes, please try updating it again.",
-              open: true
+              open: true,
             });
             cancelEditing();
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
           setNotification({
             type: "warning",
             message:
               "Something may have gone wrong while updating your phone number. It should fix itself, but if your new phone number is not visiable after a few minutes, please try updating it again.",
-            open: true
+            open: true,
           });
           cancelEditing();
         });
     } else {
       setNotification({
         type: "error",
-        message: "Unable to phone number. Try signing out and signing back in.",
-        open: true
+        message:
+          "Unable to update phone number. Try signing out and signing back in.",
+        open: true,
       });
     }
   };
