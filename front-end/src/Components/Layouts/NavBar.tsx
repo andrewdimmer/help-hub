@@ -112,6 +112,26 @@ const NavBar: React.FunctionComponent<NavBarProps> = ({
                 <MenuItem
                   onClick={() => {
                     handleClose();
+                    setPageKey("events");
+                  }}
+                >
+                  Volunteer
+                </MenuItem>
+              )}
+              {currentUserProfile && (
+                <MenuItem
+                  onClick={() => {
+                    handleClose();
+                    setPageKey("organizations");
+                  }}
+                >
+                  Manage Organizations
+                </MenuItem>
+              )}
+              {currentUserProfile && (
+                <MenuItem
+                  onClick={() => {
+                    handleClose();
                     setPageKey("profile");
                   }}
                 >
