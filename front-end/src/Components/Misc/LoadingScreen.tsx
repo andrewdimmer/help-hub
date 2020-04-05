@@ -9,19 +9,20 @@ import {
 import React, { Fragment } from "react";
 
 declare interface LoadingProps {
-  busyMessage: string;
+  loadingMessage: string;
 }
 
-const styles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     loadingContainer: {
       width: "100vw",
       height: "100vh",
-      position: "absolute",
+      position: "fixed",
       top: 0,
       bottom: 0,
       left: 0,
       right: 0,
+      color: theme.palette.getContrastText(theme.palette.background.default),
       backgroundColor: theme.palette.background.default
     },
     loadingCircle: {
@@ -36,9 +37,9 @@ const styles = makeStyles((theme: Theme) =>
  * @param param0 A LoadingProps object with the busy message to display on the loading screen
  */
 const LoadingScreen: React.FunctionComponent<LoadingProps> = ({
-  busyMessage
+  loadingMessage: busyMessage
 }) => {
-  const localClasses = styles();
+  const localClasses = useStyles();
 
   if (busyMessage) {
     return (
