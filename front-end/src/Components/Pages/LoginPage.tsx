@@ -30,7 +30,7 @@ const LoginPage: React.FunctionComponent<PageProps> = ({
             setNotification({
               type: "info",
               message:
-                "Almost there! Please fill out some more information that organizations will need when you sign up to volunteer.",
+                "Almost there! Please complete the form below to finish creating your account.",
               open: true
             });
             handleLoadUserData(user.uid);

@@ -1,4 +1,4 @@
-import { Container } from "@material-ui/core";
+import { Button, Container, Typography } from "@material-ui/core";
 import React, { Fragment } from "react";
 import { firebaseApp } from "../Scripts/firebaseConfig";
 import {
@@ -92,6 +92,20 @@ const App: React.FunctionComponent<AppProps> = ({ theme, toggleTheme }) => {
           currentUserProfile={currentUserProfile}
           classes={classes}
         />
+        {pageKey !== "home" && (
+          <Button
+            color="primary"
+            fullWidth
+            variant="outlined"
+            size="large"
+            className={classes.margined}
+            onClick={() => {
+              setPageKey("home");
+            }}
+          >
+            <Typography variant="h4">Return to Home</Typography>
+          </Button>
+        )}
       </Container>
       <LoadingScreen loadingMessage={loadingMessage} />
       <NotificationBar
