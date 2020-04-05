@@ -9,13 +9,19 @@ import {
   Typography,
 } from "@material-ui/core";
 import React, { Fragment } from "react";
+import { PageProps } from ".";
+import { createNewEventDatabase } from "../../Scripts/firebaseCreateEvent";
 import categories from "../Content/Categories";
 import DateTime from "../Layouts/DateTime";
 
-const CreateEvent: React.FunctionComponent = () => {
-  const [eventName, setEventName] = React.useState<string>();
-  const [eventDescription, setEventDescription] = React.useState<string>();
-  const [contactInfo, setContactInfo] = React.useState<string>();
+const CreateEvent: React.FunctionComponent<PageProps> = ({
+  currentUserProfile,
+  setNotification,
+  handleLoadUserData,
+}) => {
+  const [eventName, setEventName] = React.useState<string>("");
+  const [eventDescription, setEventDescription] = React.useState<string>("");
+  const [contactInfo, setContactInfo] = React.useState<string>("");
   const [dateTimes, setDateTimes] = React.useState<
     {
       startDate: string;
@@ -39,7 +45,9 @@ const CreateEvent: React.FunctionComponent = () => {
       zip: "",
     },
   ]);
-  const [categorySelections, setCategorySelections] = React.useState();
+  const [categorySelections, setCategorySelections] = React.useState<string[]>(
+    []
+  );
 
   const handleEventNameChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -97,6 +105,82 @@ const CreateEvent: React.FunctionComponent = () => {
       },
     ]);
     setDateTimes(newDateTimes);
+  };
+
+  const handleUpdateCategories = (input: string) => {
+    const newCategorySelections = categorySelections.concat([]);
+    if (categories.includes(input)) {
+      newCategorySelections.splice(newCategorySelections.indexOf(input), 1);
+    } else {
+      newCategorySelections.push(input);
+    }
+    setCategorySelections(newCategorySelections);
+  };
+
+  const saveEvent = () => {
+    if (currentUserProfile) {
+      createNewEventDatabase({
+        organizationId: currentUserProfile.userId,
+        eventName,
+        eventDescription,
+        eventContactInfo: contactInfo,
+        events: dateTimes,
+        categories: categorySelections,
+        volunteer: null,
+      })
+        .then((value) => {
+          if (value) {
+            setNotification({
+              type: "success",
+              message: "Event Created Successfully!",
+              open: true,
+            });
+            handleLoadUserData(currentUserProfile.userId);
+            handleClearData();
+          } else {
+            setNotification({
+              type: "warning",
+              message:
+                "Something may have gone wrong while creating your event. It should fix itself, but if your new event is not visiable after a few minutes, please try updating it again.",
+              open: true,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          setNotification({
+            type: "warning",
+            message:
+              "Something may have gone wrong while creating your event. It should fix itself, but if your new event is not visiable after a few minutes, please try updating it again.",
+            open: true,
+          });
+        });
+    } else {
+      setNotification({
+        type: "error",
+        message: "Unable to create event. Try signing out and signing back in.",
+        open: true,
+      });
+    }
+  };
+
+  const handleClearData = () => {
+    setCategorySelections([]);
+    setContactInfo("");
+    setDateTimes([
+      {
+        startDate: "",
+        startTime: "",
+        endDate: "",
+        endTime: "",
+        address: "",
+        city: "",
+        state: "",
+        zip: "",
+      },
+    ]);
+    setEventDescription("");
+    setEventDescription("");
   };
 
   return (
@@ -176,8 +260,10 @@ const CreateEvent: React.FunctionComponent = () => {
                       <FormControlLabel
                         control={
                           <Checkbox
-                            // checked={}
-                            // onChange={}
+                            checked={categorySelections.includes(val)}
+                            onChange={() => {
+                              handleUpdateCategories(val);
+                            }}
                             name={val}
                             color="primary"
                           />
@@ -192,12 +278,20 @@ const CreateEvent: React.FunctionComponent = () => {
             <Grid item>
               <Grid container direction="row" justify="space-evenly">
                 <Grid item>
-                  <Button variant="contained" color="primary">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={saveEvent}
+                  >
                     Save event
                   </Button>
                 </Grid>
                 <Grid item>
-                  <Button variant="contained" color="secondary">
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleClearData}
+                  >
                     Cancel
                   </Button>
                 </Grid>
