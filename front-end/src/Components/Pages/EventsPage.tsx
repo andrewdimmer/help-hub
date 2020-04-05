@@ -23,10 +23,15 @@ import categories from "../Content/Categories";
 
 const EventsPage: React.FunctionComponent = () => {
   const [open, setOpen] = React.useState(false);
+  const [radius, setRadius] = React.useState<string>();
   const [zip, setZip] = React.useState<string>();
 
   const handleZipChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setZip(event.target.value);
+  };
+
+  const handleRadiusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRadius(event.target.value);
   };
 
   const handleOpen = () => {
@@ -97,6 +102,11 @@ const EventsPage: React.FunctionComponent = () => {
               );
             })}
             <Grid item>
+              <Typography variant="subtitle1" style={{ marginBottom: "5px" }}>
+                Location filter by zip code
+              </Typography>
+            </Grid>
+            <Grid item>
               <TextField
                 id="zip"
                 label="Zip Code"
@@ -104,6 +114,17 @@ const EventsPage: React.FunctionComponent = () => {
                 fullWidth
                 defaultValue={zip}
                 onChange={handleZipChange}
+                style={{ marginBottom: "10px" }}
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                id="radius"
+                label="Radius in miles"
+                variant="outlined"
+                fullWidth
+                defaultValue={radius}
+                onChange={handleRadiusChange}
               />
             </Grid>
           </Grid>
