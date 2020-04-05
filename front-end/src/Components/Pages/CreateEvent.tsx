@@ -1,24 +1,44 @@
-import React, { Fragment } from "react";
 import {
   Box,
-  Grid,
-  Typography,
   Button,
   Card,
-  AppBar,
-  Tabs,
-  Tab,
-  TextField,
-  FormControlLabel,
   Checkbox,
+  FormControlLabel,
+  Grid,
+  TextField,
+  Typography,
 } from "@material-ui/core";
-import DateTime from "../Layouts/DateTime";
+import React, { Fragment } from "react";
 import categories from "../Content/Categories";
+import DateTime from "../Layouts/DateTime";
 
 const CreateEvent: React.FunctionComponent = () => {
   const [eventName, setEventName] = React.useState<string>();
   const [eventDescription, setEventDescription] = React.useState<string>();
   const [contactInfo, setContactInfo] = React.useState<string>();
+  const [dateTimes, setDateTimes] = React.useState<
+    {
+      startDate: string;
+      startTime: string;
+      endDate: string;
+      endTime: string;
+      address: string;
+      city: string;
+      state: string;
+      zip: string;
+    }[]
+  >([
+    {
+      startDate: "",
+      startTime: "",
+      endDate: "",
+      endTime: "",
+      address: "",
+      city: "",
+      state: "",
+      zip: "",
+    },
+  ]);
   const [categorySelections, setCategorySelections] = React.useState();
 
   const handleEventNameChange = (
@@ -39,31 +59,35 @@ const CreateEvent: React.FunctionComponent = () => {
     setContactInfo(event.target.value);
   };
 
-  const [dateTimes, setDateTimes] = React.useState([
-    {
-      startDate: "",
-      startTme: "",
-      endDate: "",
-      endTime: "",
-      address: "",
-      city: "",
-      state: "",
-      zip: "",
-    },
-  ]);
+  const handleDateTimeChange = (
+    value: string,
+    index: number,
+    property:
+      | "startDate"
+      | "startTime"
+      | "endDate"
+      | "endTime"
+      | "address"
+      | "city"
+      | "state"
+      | "zip"
+  ) => {
+    const newDateTimes = dateTimes.concat([]);
+    newDateTimes[index][property] = value;
+    setDateTimes(newDateTimes);
+  };
 
   const removeDateTime = (index: number) => {
-    let newDateTimes = dateTimes
-      .splice(0, index)
-      .concat(dateTimes.splice(index + 1, dateTimes.length));
+    const newDateTimes = dateTimes.concat([]);
+    newDateTimes.splice(index, 1);
     setDateTimes(newDateTimes);
   };
 
   const addDateTime = () => {
-    let newDateTimes = dateTimes.concat([
+    const newDateTimes = dateTimes.concat([
       {
         startDate: "",
-        startTme: "",
+        startTime: "",
         endDate: "",
         endTime: "",
         address: "",
@@ -73,10 +97,6 @@ const CreateEvent: React.FunctionComponent = () => {
       },
     ]);
     setDateTimes(newDateTimes);
-  };
-
-  const handleDateTimeChange = (index: number) => {
-    let newDateTimes = dateTimes;
   };
 
   return (
@@ -90,6 +110,7 @@ const CreateEvent: React.FunctionComponent = () => {
             <Grid item xs={12}>
               <TextField
                 id="eventName"
+                value={eventName}
                 label="Event Name"
                 variant="outlined"
                 fullWidth
@@ -99,6 +120,7 @@ const CreateEvent: React.FunctionComponent = () => {
             <Grid item xs={12}>
               <TextField
                 id="eventDescription"
+                value={eventDescription}
                 label="Event Description"
                 variant="outlined"
                 multiline
@@ -109,6 +131,7 @@ const CreateEvent: React.FunctionComponent = () => {
             <Grid item xs={12}>
               <TextField
                 id="organizerConctact"
+                value={contactInfo}
                 label="Organizer Contact Information"
                 variant="outlined"
                 fullWidth
@@ -120,6 +143,7 @@ const CreateEvent: React.FunctionComponent = () => {
                 return (
                   <DateTime
                     index={index}
+                    dateTime={value}
                     removeDateTime={removeDateTime}
                     handleDateTimeChange={handleDateTimeChange}
                   ></DateTime>
@@ -148,7 +172,7 @@ const CreateEvent: React.FunctionComponent = () => {
               <Grid container direction="column">
                 {categories.map((val, index) => {
                   return (
-                    <Grid item>
+                    <Grid item key={index}>
                       <FormControlLabel
                         control={
                           <Checkbox
