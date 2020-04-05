@@ -10,8 +10,9 @@ export const styles = makeStyles((theme: Theme) =>
     margined: {
       margin: theme.spacing(2)
     },
-    marginedTop: {
-      marginTop: theme.spacing(2)
+    marginedTopBottom: {
+      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(2)
     },
     marginedPadded: {
       margin: theme.spacing(2),
