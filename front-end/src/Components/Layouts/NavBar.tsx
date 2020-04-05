@@ -12,8 +12,8 @@ import {
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import Brightness4Icon from "@material-ui/icons/Brightness4";
 import Brightness7Icon from "@material-ui/icons/Brightness7";
-import * as firebase from "firebase";
 import React from "react";
+import { UserProfile } from "../../Scripts/firebaseGetUserProfile";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -32,13 +32,17 @@ const useStyles = makeStyles((theme: Theme) =>
 declare interface NavBarProps {
   theme: "light" | "dark";
   toggleTheme: () => void;
-  user: firebase.User | null;
+  currentUserProfile: UserProfile | null;
+  setPageKey: (pageKey: string) => void;
+  pageTitle: string;
 }
 
 const NavBar: React.FunctionComponent<NavBarProps> = ({
   theme,
   toggleTheme,
-  user
+  currentUserProfile,
+  setPageKey,
+  pageTitle
 }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -57,7 +61,7 @@ const NavBar: React.FunctionComponent<NavBarProps> = ({
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
-            Help Hub
+            {pageTitle ? `${pageTitle} - ` : ""}Volunteer Here
           </Typography>
 
           <div>
@@ -94,8 +98,36 @@ const NavBar: React.FunctionComponent<NavBarProps> = ({
               open={open}
               onClose={handleClose}
             >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
+              {!currentUserProfile && (
+                <MenuItem
+                  onClick={() => {
+                    handleClose();
+                    setPageKey("login");
+                  }}
+                >
+                  Join or Login
+                </MenuItem>
+              )}
+              {currentUserProfile && (
+                <MenuItem
+                  onClick={() => {
+                    handleClose();
+                    setPageKey("profile");
+                  }}
+                >
+                  Profile
+                </MenuItem>
+              )}
+              {currentUserProfile && (
+                <MenuItem
+                  onClick={() => {
+                    handleClose();
+                    setPageKey("logout");
+                  }}
+                >
+                  Logout
+                </MenuItem>
+              )}
             </Menu>
           </div>
         </Toolbar>
