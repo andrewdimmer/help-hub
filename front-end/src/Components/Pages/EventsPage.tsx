@@ -16,12 +16,18 @@ const EventsPage: React.FunctionComponent = () => {
     <Fragment>
       <Box mx="5%" my="2.5%">
         <Card style={{ padding: "1.5%" }}>
-          <Typography variant="h4" style={{ marginBottom: "1%", flexGrow: 1 }}>
-            Events near you
-          </Typography>
-          <Button variant="contained" color="primary">
-            Filter
-          </Button>
+          <Grid container direction="row">
+            <Grid item xs={11}>
+              <Typography variant="h4" style={{ marginBottom: "1%" }}>
+                Events near you
+              </Typography>
+            </Grid>
+            <Grid item xs={1}>
+              <Button variant="contained" color="primary">
+                Filter
+              </Button>
+            </Grid>
+          </Grid>
           <Grid container direction="column" spacing={4}>
             <Grid item xs={12}>
               <Box>

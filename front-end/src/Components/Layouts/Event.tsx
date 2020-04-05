@@ -28,7 +28,6 @@ const Event: React.FunctionComponent<FromProps> = ({
       <Box p="50px">
         <Card
           style={{
-            backgroundColor: "#F7F7F7",
             padding: "1.5%",
           }}
         >
@@ -53,7 +52,7 @@ const Event: React.FunctionComponent<FromProps> = ({
                     <Box mr="5%">
                       <Grid item>
                         <Typography variant="body2">
-                          <em>{eventDateTime}}</em>
+                          <em>{eventDateTime}</em>
                         </Typography>
                       </Grid>
                     </Box>
