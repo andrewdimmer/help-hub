@@ -16,6 +16,69 @@ import DateTime from "../Layouts/DateTime";
 import categories from "../Content/Categories";
 
 const CreateEvent: React.FunctionComponent = () => {
+  const [eventName, setEventName] = React.useState<string>();
+  const [eventDescription, setEventDescription] = React.useState<string>();
+  const [contactInfo, setContactInfo] = React.useState<string>();
+  const [categorySelections, setCategorySelections] = React.useState();
+
+  const handleEventNameChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setEventName(event.target.value);
+  };
+
+  const handleEventDescriptionChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setEventDescription(event.target.value);
+  };
+
+  const handleContactInfoChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setContactInfo(event.target.value);
+  };
+
+  const [dateTimes, setDateTimes] = React.useState([
+    {
+      startDate: "",
+      startTme: "",
+      endDate: "",
+      endTime: "",
+      address: "",
+      city: "",
+      state: "",
+      zip: "",
+    },
+  ]);
+
+  const removeDateTime = (index: number) => {
+    let newDateTimes = dateTimes
+      .splice(0, index)
+      .concat(dateTimes.splice(index + 1, dateTimes.length));
+    setDateTimes(newDateTimes);
+  };
+
+  const addDateTime = () => {
+    let newDateTimes = dateTimes.concat([
+      {
+        startDate: "",
+        startTme: "",
+        endDate: "",
+        endTime: "",
+        address: "",
+        city: "",
+        state: "",
+        zip: "",
+      },
+    ]);
+    setDateTimes(newDateTimes);
+  };
+
+  const handleDateTimeChange = (index: number) => {
+    let newDateTimes = dateTimes;
+  };
+
   return (
     <Fragment>
       <Box mx="5%" my="2.5%">
@@ -30,6 +93,7 @@ const CreateEvent: React.FunctionComponent = () => {
                 label="Event Name"
                 variant="outlined"
                 fullWidth
+                onChange={handleEventNameChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -39,6 +103,7 @@ const CreateEvent: React.FunctionComponent = () => {
                 variant="outlined"
                 multiline
                 fullWidth
+                onChange={handleEventDescriptionChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -47,13 +112,29 @@ const CreateEvent: React.FunctionComponent = () => {
                 label="Organizer Contact Information"
                 variant="outlined"
                 fullWidth
+                onChange={handleContactInfoChange}
               />
             </Grid>
             <Grid item>
-              <DateTime></DateTime>
+              {dateTimes.map((value, index) => {
+                return (
+                  <DateTime
+                    index={index}
+                    removeDateTime={removeDateTime}
+                    handleDateTimeChange={handleDateTimeChange}
+                  ></DateTime>
+                );
+              })}
+
               {/* TODO: Add other datetimes here */}
               <br />
-              <Button variant="contained" color="primary">
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  addDateTime();
+                }}
+              >
                 New date
               </Button>
             </Grid>

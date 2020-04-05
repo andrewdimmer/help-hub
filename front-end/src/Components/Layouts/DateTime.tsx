@@ -12,7 +12,62 @@ import {
 } from "@material-ui/core";
 import CloseIcon from "@material-ui/icons/Close";
 
-const DateTime: React.FunctionComponent = () => {
+interface DateTimeProps {
+  index: number;
+  removeDateTime: (index: number) => void;
+  handleDateTimeChange: (index: number) => void;
+}
+
+const DateTime: React.FunctionComponent<DateTimeProps> = ({
+  index,
+  removeDateTime,
+  handleDateTimeChange,
+}) => {
+  const [startDate, setStartDate] = React.useState<string>();
+  const [startTime, setStartTime] = React.useState<string>();
+  const [endDate, setEndDate] = React.useState<string>();
+  const [endTime, setEndTime] = React.useState<string>();
+  const [address, setAddress] = React.useState<string>();
+  const [city, setCity] = React.useState<string>();
+  const [state, setState] = React.useState<string>();
+  const [zip, setZip] = React.useState<string>();
+
+  const handleStartDateChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setStartDate(event.target.value);
+  };
+
+  const handleStartTimeChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setStartTime(event.target.value);
+  };
+
+  const handleEndDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEndDate(event.target.value);
+  };
+
+  const handleEndTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setEndTime(event.target.value);
+  };
+
+  const handleAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setAddress(event.target.value);
+  };
+
+  const handleCityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCity(event.target.value);
+  };
+
+  const handleStateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setState(event.target.value);
+  };
+
+  const handleZipChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setZip(event.target.value);
+  };
+
   return (
     <Card style={{ padding: "1%" }}>
       <Grid container direction="row" alignItems="center">
@@ -26,6 +81,7 @@ const DateTime: React.FunctionComponent = () => {
                     label="Start date (mm/dd/yyyy)"
                     variant="outlined"
                     fullWidth
+                    onChange={handleStartDateChange}
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -34,6 +90,7 @@ const DateTime: React.FunctionComponent = () => {
                     label="Start time (hh:mm AM/PM)"
                     variant="outlined"
                     fullWidth
+                    onChange={handleStartTimeChange}
                   />
                 </Grid>
               </Grid>
@@ -47,6 +104,7 @@ const DateTime: React.FunctionComponent = () => {
                     label="End date (mm/dd/yyyy)"
                     variant="outlined"
                     fullWidth
+                    onChange={handleEndDateChange}
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -55,6 +113,7 @@ const DateTime: React.FunctionComponent = () => {
                     label="End time (hh:mm AM/PM)"
                     variant="outlined"
                     fullWidth
+                    onChange={handleEndTimeChange}
                   />
                 </Grid>
               </Grid>
@@ -67,6 +126,7 @@ const DateTime: React.FunctionComponent = () => {
                     label="Street address"
                     variant="outlined"
                     fullWidth
+                    onChange={handleAddressChange}
                   />
                 </Grid>
                 <Grid item xs={2} style={{ paddingRight: "1%" }}>
@@ -75,6 +135,7 @@ const DateTime: React.FunctionComponent = () => {
                     label="City"
                     variant="outlined"
                     fullWidth
+                    onChange={handleCityChange}
                   />
                 </Grid>
                 <Grid item xs={2} style={{ paddingRight: "1%" }}>
@@ -83,6 +144,7 @@ const DateTime: React.FunctionComponent = () => {
                     label="State"
                     variant="outlined"
                     fullWidth
+                    onChange={handleStateChange}
                   />
                 </Grid>
                 <Grid item xs={2}>
@@ -91,6 +153,7 @@ const DateTime: React.FunctionComponent = () => {
                     label="Postal code"
                     variant="outlined"
                     fullWidth
+                    onChange={handleZipChange}
                   />
                 </Grid>
               </Grid>
@@ -98,7 +161,13 @@ const DateTime: React.FunctionComponent = () => {
           </Grid>
         </Grid>
         <Grid item>
-          <Button>
+          <Button
+            onClick={() => {
+              console.log(index);
+              console.log(removeDateTime);
+              removeDateTime(index);
+            }}
+          >
             <CloseIcon />
           </Button>
         </Grid>
