@@ -8,10 +8,29 @@ import {
   AppBar,
   Tabs,
   Tab,
+  Modal,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  TextField,
+  DialogActions,
+  FormControlLabel,
+  Checkbox,
 } from "@material-ui/core";
 import Event from "../Layouts/Event";
+import categories from "../Content/Categories";
 
 const EventsPage: React.FunctionComponent = () => {
+  const [open, setOpen] = React.useState(false);
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   return (
     <Fragment>
       <Box mx="5%" my="2.5%">
@@ -23,7 +42,7 @@ const EventsPage: React.FunctionComponent = () => {
               </Typography>
             </Grid>
             <Grid item xs={1}>
-              <Button variant="contained" color="primary">
+              <Button variant="contained" color="primary" onClick={handleOpen}>
                 Filter
               </Button>
             </Grid>
@@ -42,6 +61,47 @@ const EventsPage: React.FunctionComponent = () => {
           </Grid>
         </Card>
       </Box>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="form-dialog-title"
+      >
+        <DialogTitle id="form-dialog-title">Categories</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            <Typography variant="subtitle1">
+              <em>Select all that apply to this event</em>
+            </Typography>
+          </DialogContentText>
+          <Grid container direction="column">
+            {categories.map((val, index) => {
+              return (
+                <Grid item>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        // checked={}
+                        // onChange={}
+                        name={val}
+                        color="primary"
+                      />
+                    }
+                    label={val}
+                  />
+                </Grid>
+              );
+            })}
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary" variant="contained">
+            Filter
+          </Button>
+          <Button onClick={handleClose} color="primary" variant="contained">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Fragment>
   );
 };
