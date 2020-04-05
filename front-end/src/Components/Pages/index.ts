@@ -10,6 +10,7 @@ import LoginPage from "./LoginPage";
 import LogoutPage from "./LogoutPage";
 import ProfilePage from "./ProfilePage";
 import EventsPage from "./EventsPage";
+import CreateEvent from "./CreateEvent";
 import { UserProfile } from "../../Scripts/firebaseGetUserProfile";
 
 export declare interface PageProps {
@@ -72,6 +73,15 @@ const pageList: PageListItem[] = [
     displaySignedIn: true,
     displaySignedOut: false,
     component: EventsPage,
+  },
+  {
+    key: "organizations",
+    title: "Organizations",
+    menuLabel: "Organizations",
+    menuIcon: ExitToAppIcon,
+    displaySignedIn: true,
+    displaySignedOut: false,
+    component: CreateEvent,
   },
   {
     key: "logout",

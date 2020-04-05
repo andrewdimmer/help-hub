@@ -13,8 +13,7 @@ import {
   Checkbox,
 } from "@material-ui/core";
 import DateTime from "../Layouts/DateTime";
-
-const Categories = ["Category 1", "Category 2"];
+import categories from "../Content/Categories";
 
 const CreateEvent: React.FunctionComponent = () => {
   return (
@@ -66,7 +65,7 @@ const CreateEvent: React.FunctionComponent = () => {
             </Grid>
             <Grid item>
               <Grid container direction="column">
-                {Categories.map((val, index) => {
+                {categories.map((val, index) => {
                   return (
                     <Grid item>
                       <FormControlLabel
