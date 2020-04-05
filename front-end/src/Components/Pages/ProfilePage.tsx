@@ -6,6 +6,7 @@ import ViewEditUserEmail from "../Content/ProfileInformation/ViewEditUserEmail";
 import ViewEditUserPassword from "../Content/ProfileInformation/ViewEditUserPassword";
 import ViewEditUserPhone from "../Content/ProfileInformation/ViewEditUserPhone";
 import ViewEditUserPhoto from "../Content/ProfileInformation/ViewEditUserPhoto";
+import ViewEditUserZipcode from "../Content/ProfileInformation/ViewEditUserZipcode";
 
 const ProfilePage: React.FunctionComponent<PageProps> = ({
   currentUser,
@@ -15,7 +16,7 @@ const ProfilePage: React.FunctionComponent<PageProps> = ({
   setLoadingMessage,
   forceReloadUserData,
   handleLoadUserData,
-  classes
+  classes,
 }) => {
   return (
     <Fragment>
@@ -69,6 +70,16 @@ const ProfilePage: React.FunctionComponent<PageProps> = ({
             classes={classes}
           />
           <ViewEditUserPassword
+            currentUser={currentUser}
+            currentUserProfile={currentUserProfile}
+            forceReloadUserData={forceReloadUserData}
+            handleLoadUserData={handleLoadUserData}
+            setPageKey={setPageKey}
+            setLoadingMessage={setLoadingMessage}
+            setNotification={setNotification}
+            classes={classes}
+          />
+          <ViewEditUserZipcode
             currentUser={currentUser}
             currentUserProfile={currentUserProfile}
             forceReloadUserData={forceReloadUserData}
