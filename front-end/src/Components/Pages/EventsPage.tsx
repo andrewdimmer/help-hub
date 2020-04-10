@@ -27,6 +27,7 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
   const filterCategories = categories.concat(["Uncategorized"]);
   const [filterBoxOpen, setFilterBoxOpen] = React.useState<boolean>(false);
   const [radius, setRadius] = React.useState<number>(20);
+  const [priorRadius, setPriorRadius] = React.useState<number>(-1);
   const [zip, setZip] = React.useState<string>(
     currentUserProfile?.zipcode ? currentUserProfile.zipcode : ""
   );
@@ -80,6 +81,7 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
     if (!gettingEvents) {
       if (zip.length === 5 || zip.length === 6) {
         setPriorZip(zip);
+        setPriorRadius(radius);
         setGettingEvents(true);
         setLoadingMessage("Getting Upcoming Events...");
         getEventsWithinRadius(zip, radius).then((eventsData) => {
@@ -117,7 +119,7 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
     for (const event of events) {
       for (const category of selectedCategories) {
         if (category === "Uncategorized") {
-          if (!event.categories) {
+          if (event.categories.length === 0) {
             newVisibleEvents.push(event);
             break;
           }
@@ -131,7 +133,7 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
   };
 
   const handleFilterEvents = () => {
-    if (zip !== priorZip) {
+    if (zip !== priorZip || radius !== priorRadius) {
       getEvents();
     } else {
       if (events) {
@@ -202,7 +204,11 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
                   eventDesciption={eventDescription}
                   eventDateTime={`${startDate} ${startTime} - ${endDate} ${endTime}`}
                   eventContact={eventContactInfo}
-                  eventCategories={categories.toString().replace(/,/g, ", ")}
+                  eventCategories={
+                    categories.length > 0
+                      ? categories.toString().replace(/,/g, ", ")
+                      : "Uncategorized"
+                  }
                   eventLocation={`${address}, ${city}, ${state} ${zip}`}
                   classes={classes}
                   number={index}
