@@ -2,6 +2,8 @@ import * as functions from "firebase-functions";
 import { getZipCodesWithinRadius } from "../../ZipCodes/getZipCodesWithinRadius";
 import firebaseApp from "../firebaseConfig";
 import { getEventsFromEventRefCollection } from "./getEventsFromEventIdEntry";
+import { EventData } from "./eventTypes";
+import { sortEventsByStartDate } from "./sortEventsByStartDate";
 
 // Start writing Firebase Functions
 // https://firebase.google.com/docs/functions/typescript
@@ -40,7 +42,9 @@ export const getEventsWithinRadius = functions.https.onRequest(
                   }
                 }
               }
-              response.status(200).send({ events });
+              response
+                .status(200)
+                .send({ events: sortEventsByStartDate(events as EventData[]) });
             }
           );
           console.log(promises2);
