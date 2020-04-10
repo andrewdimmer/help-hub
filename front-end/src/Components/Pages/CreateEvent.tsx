@@ -424,6 +424,7 @@ const CreateEvent: React.FunctionComponent<PageProps> = ({
               {dateTimes.map((value, index) => {
                 return (
                   <DateTime
+                    key={`DateTime ${index}`}
                     index={index}
                     dateTime={value}
                     removeDateTime={removeDateTime}
@@ -454,7 +455,7 @@ const CreateEvent: React.FunctionComponent<PageProps> = ({
               <Grid container direction="column">
                 {categories.map((val, index) => {
                   return (
-                    <Grid item key={index}>
+                    <Grid item key={`Category ${index}`}>
                       <FormControlLabel
                         control={
                           <Checkbox

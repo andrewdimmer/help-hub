@@ -48,6 +48,16 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
     setOpen(false);
   };
 
+  const getPreviousEventDateString = (index: number) => {
+    if (index === 0 || events === null) {
+      return new Date("1970/01/01").toDateString();
+    } else {
+      return new Date(
+        `${events[index - 1].startDate} ${events[index - 1].startTime}`
+      ).toDateString();
+    }
+  };
+
   const getEvents = () => {
     if (!gettingEvents) {
       if (zip.length > 0) {
@@ -76,6 +86,7 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
           message: "Please specify a zipcode to find events around.",
           open: true,
         });
+        setEvents([]);
         handleOpen();
       }
     }
@@ -111,6 +122,7 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
         events.map(
           (
             {
+              eventId,
               eventName,
               eventDescription,
               eventContactInfo,
@@ -126,22 +138,30 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
             },
             index
           ) => {
+            const eventStartDateString = new Date(
+              `${startDate} ${startTime}`
+            ).toDateString();
             return (
-              <EventInfo
-                eventName={eventName}
-                eventDesciption={eventDescription}
-                eventDateTime={
-                  startDate + " " + startTime + " - " + endDate + " " + endTime
-                }
-                eventContact={eventContactInfo}
-                eventCategories={categories.toString()}
-                eventLocation={address + ", " + city + ", " + state + " " + zip}
-                classes={classes}
-                number={index}
-                events={events}
-                setEvents={setEvents}
-                setNotification={setNotification}
-              />
+              <Fragment key={eventId}>
+                {eventStartDateString !== getPreviousEventDateString(index) && (
+                  <Container>
+                    <Typography variant="h4">{eventStartDateString}</Typography>
+                  </Container>
+                )}
+                <EventInfo
+                  eventName={eventName}
+                  eventDesciption={eventDescription}
+                  eventDateTime={`${startDate} ${startTime} - ${endDate} ${endTime}`}
+                  eventContact={eventContactInfo}
+                  eventCategories={categories.toString()}
+                  eventLocation={`${address}, ${city}, ${state} ${zip}`}
+                  classes={classes}
+                  number={index}
+                  events={events}
+                  setEvents={setEvents}
+                  setNotification={setNotification}
+                />
+              </Fragment>
             );
           }
         )}
@@ -189,7 +209,7 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
             </Typography>
             {categories.map((val, index) => {
               return (
-                <Grid item>
+                <Grid item key={val}>
                   <FormControlLabel
                     control={
                       <Checkbox
