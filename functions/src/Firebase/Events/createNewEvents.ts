@@ -82,7 +82,7 @@ const createEventMapInOrganization = (
     .firestore()
     .collection("organizations")
     .doc(organizationId)
-    .collection("events")
+    .collection("eventGroups")
     .doc(eventGroupId)
     .set({ eventGroupId })
     .then(() => true)
