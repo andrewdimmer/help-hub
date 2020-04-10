@@ -4,6 +4,7 @@ import firebaseApp from "../firebaseConfig";
 import { getEventsFromEventRefCollection } from "./getEventsFromEventIdEntry";
 import { EventData } from "./eventTypes";
 import { sortEventsByStartDate } from "./sortEventsByStartDate";
+import { removeEventMapInZipcode } from "./eventRefMappings";
 
 // Start writing Firebase Functions
 // https://firebase.google.com/docs/functions/typescript
@@ -42,9 +43,28 @@ export const getEventsWithinRadius = functions.https.onRequest(
                   }
                 }
               }
-              response
-                .status(200)
-                .send({ events: sortEventsByStartDate(events as EventData[]) });
+
+              const sortedEvents = sortEventsByStartDate(events as EventData[]);
+              const now = new Date();
+              while (
+                sortedEvents.length > 0 &&
+                new Date(
+                  `${sortedEvents[0].startDate} ${sortedEvents[0].startTime}`
+                ) < now
+              ) {
+                const removeMappingFor = sortedEvents.shift();
+                if (removeMappingFor) {
+                  const removePromise = removeEventMapInZipcode(
+                    removeMappingFor.zip,
+                    removeMappingFor.eventId
+                  );
+                  console.log(
+                    `Removed expired mapping for ${removeMappingFor.eventId} in ${removeMappingFor.zip}: ${removePromise}`
+                  );
+                }
+              }
+
+              response.status(200).send({ events: sortedEvents });
             }
           );
           console.log(promises2);
