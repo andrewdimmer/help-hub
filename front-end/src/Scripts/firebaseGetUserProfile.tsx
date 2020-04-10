@@ -1,13 +1,5 @@
 import ky from "ky";
-
-export declare interface UserProfile {
-  userId: string;
-  displayName: string;
-  email: string;
-  phoneNumber: string;
-  photoURL: string;
-  zipcode: string;
-}
+import { UserProfile } from "./firebaseUserTypes";
 
 export const getUserProfileDatabase = (
   userId: string

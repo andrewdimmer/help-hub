@@ -1,10 +1,8 @@
 import { Button, Container, Typography } from "@material-ui/core";
 import React, { Fragment } from "react";
 import { firebaseApp } from "../Scripts/firebaseConfig";
-import {
-  getUserProfileDatabase,
-  UserProfile,
-} from "../Scripts/firebaseGetUserProfile";
+import { getUserProfileDatabase } from "../Scripts/firebaseGetUserProfile";
+import { UserProfile } from "../Scripts/firebaseUserTypes";
 import { styles } from "../Styles";
 import NavBar from "./Layouts/NavBar";
 import LoadingScreen from "./Misc/LoadingScreen";
