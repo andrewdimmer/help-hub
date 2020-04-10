@@ -11,7 +11,8 @@ const ViewEditUserEmail: React.FunctionComponent<PageProps> = ({
   currentUserProfile,
   setNotification,
   handleLoadUserData,
-  classes
+  setLoadingMessage,
+  classes,
 }) => {
   const [email, setEmail] = React.useState<string>(
     currentUserProfile?.email ? currentUserProfile.email : ""
@@ -33,6 +34,7 @@ const ViewEditUserEmail: React.FunctionComponent<PageProps> = ({
 
   const saveEmail = () => {
     if (currentUser && currentUserProfile) {
+      setLoadingMessage("Updating Email Address...");
       currentUser
         .updateEmail(email)
         .then(() => {
@@ -41,34 +43,37 @@ const ViewEditUserEmail: React.FunctionComponent<PageProps> = ({
             currentUserProfile.email ? currentUserProfile.email : "",
             email
           )
-            .then(value => {
+            .then((value) => {
               if (value) {
                 setNotification({
                   type: "success",
                   message: "Email Address Updated Successfully!",
-                  open: true
+                  open: true,
                 });
                 handleLoadUserData(currentUserProfile.userId);
                 cancelEditing();
+                setLoadingMessage("");
               } else {
                 setNotification({
                   type: "warning",
                   message:
                     "Something may have gone wrong while updating your email address. It should fix itself, but if your new email address is not visiable after a few minutes, please try updating it again.",
-                  open: true
+                  open: true,
                 });
                 cancelEditing();
+                setLoadingMessage("");
               }
             })
-            .catch(err => {
+            .catch((err) => {
               console.log(err);
               setNotification({
                 type: "warning",
                 message:
                   "Something may have gone wrong while updating your email address. It should fix itself, but if your new email address is not visiable after a few minutes, please try updating it again.",
-                open: true
+                open: true,
               });
               cancelEditing();
+              setLoadingMessage("");
             });
         })
         .catch((err: any) => {
@@ -78,16 +83,17 @@ const ViewEditUserEmail: React.FunctionComponent<PageProps> = ({
             message: `Unable to update email address. ${
               err.message ? err.message : "Please try again later."
             }`,
-            open: true
+            open: true,
           });
           cancelEditing();
+          setLoadingMessage("");
         });
     } else {
       setNotification({
         type: "error",
         message:
           "Unable to email address. Try signing out and signing back in.",
-        open: true
+        open: true,
       });
     }
   };

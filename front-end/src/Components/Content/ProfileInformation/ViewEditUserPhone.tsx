@@ -10,6 +10,7 @@ const ViewEditUserPhone: React.FunctionComponent<PageProps> = ({
   currentUserProfile,
   setNotification,
   handleLoadUserData,
+  setLoadingMessage,
   classes,
 }) => {
   const [phone, setPhone] = React.useState<string>(
@@ -34,6 +35,7 @@ const ViewEditUserPhone: React.FunctionComponent<PageProps> = ({
 
   const savePhone = () => {
     if (currentUserProfile) {
+      setLoadingMessage("Updating Phone Number...");
       updatePhoneDatabase(currentUserProfile.userId, phone)
         .then((value) => {
           if (value) {
@@ -44,6 +46,7 @@ const ViewEditUserPhone: React.FunctionComponent<PageProps> = ({
             });
             handleLoadUserData(currentUserProfile.userId);
             cancelEditing();
+            setLoadingMessage("");
           } else {
             setNotification({
               type: "warning",
@@ -52,6 +55,7 @@ const ViewEditUserPhone: React.FunctionComponent<PageProps> = ({
               open: true,
             });
             cancelEditing();
+            setLoadingMessage("");
           }
         })
         .catch((err) => {
@@ -63,6 +67,7 @@ const ViewEditUserPhone: React.FunctionComponent<PageProps> = ({
             open: true,
           });
           cancelEditing();
+          setLoadingMessage("");
         });
     } else {
       setNotification({

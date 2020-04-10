@@ -11,7 +11,8 @@ const ViewEditUserDisplayName: React.FunctionComponent<PageProps> = ({
   currentUserProfile,
   setNotification,
   handleLoadUserData,
-  classes
+  setLoadingMessage,
+  classes,
 }) => {
   const [displayName, setDisplayName] = React.useState<string>(
     currentUserProfile?.displayName ? currentUserProfile.displayName : ""
@@ -35,38 +36,42 @@ const ViewEditUserDisplayName: React.FunctionComponent<PageProps> = ({
 
   const saveDisplayName = () => {
     if (currentUser && currentUserProfile) {
+      setLoadingMessage("Updating Display Name...");
       currentUser
         .updateProfile({ displayName })
         .then(() => {
           updateDisplayNameDatabase(currentUserProfile.userId, displayName)
-            .then(value => {
+            .then((value) => {
               if (value) {
                 setNotification({
                   type: "success",
                   message: "Display Name Updated Successfully!",
-                  open: true
+                  open: true,
                 });
                 handleLoadUserData(currentUserProfile.userId);
                 cancelEditing();
+                setLoadingMessage("");
               } else {
                 setNotification({
                   type: "warning",
                   message:
                     "Something may have gone wrong while updating your display name. It should fix itself, but if your new display name is not visiable after a few minutes, please try updating it again.",
-                  open: true
+                  open: true,
                 });
                 cancelEditing();
+                setLoadingMessage("");
               }
             })
-            .catch(err => {
+            .catch((err) => {
               console.log(err);
               setNotification({
                 type: "warning",
                 message:
                   "Something may have gone wrong while updating your display name. It should fix itself, but if your new display name is not visiable after a few minutes, please try updating it again.",
-                open: true
+                open: true,
               });
               cancelEditing();
+              setLoadingMessage("");
             });
         })
         .catch((err: any) => {
@@ -74,15 +79,16 @@ const ViewEditUserDisplayName: React.FunctionComponent<PageProps> = ({
           setNotification({
             type: "error",
             message: "Unable to update display name. Please try again later.",
-            open: true
+            open: true,
           });
           cancelEditing();
+          setLoadingMessage("");
         });
     } else {
       setNotification({
         type: "error",
         message: "Unable to display name. Try signing out and signing back in.",
-        open: true
+        open: true,
       });
     }
   };

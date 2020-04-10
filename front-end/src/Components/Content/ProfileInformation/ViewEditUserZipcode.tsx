@@ -10,6 +10,7 @@ const ViewEditUserZipcode: React.FunctionComponent<PageProps> = ({
   currentUserProfile,
   setNotification,
   handleLoadUserData,
+  setLoadingMessage,
   classes,
 }) => {
   const [zipcode, setZipcode] = React.useState<string>(
@@ -32,6 +33,7 @@ const ViewEditUserZipcode: React.FunctionComponent<PageProps> = ({
 
   const saveZipcode = () => {
     if (currentUserProfile) {
+      setLoadingMessage("Updating Zip Code...");
       updateZipcodeDatabase(currentUserProfile.userId, zipcode)
         .then((value) => {
           if (value) {
@@ -42,6 +44,7 @@ const ViewEditUserZipcode: React.FunctionComponent<PageProps> = ({
             });
             handleLoadUserData(currentUserProfile.userId);
             cancelEditing();
+            setLoadingMessage("");
           } else {
             setNotification({
               type: "warning",
@@ -50,6 +53,7 @@ const ViewEditUserZipcode: React.FunctionComponent<PageProps> = ({
               open: true,
             });
             cancelEditing();
+            setLoadingMessage("");
           }
         })
         .catch((err) => {
@@ -61,6 +65,7 @@ const ViewEditUserZipcode: React.FunctionComponent<PageProps> = ({
             open: true,
           });
           cancelEditing();
+          setLoadingMessage("");
         });
     } else {
       setNotification({

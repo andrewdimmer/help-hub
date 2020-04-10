@@ -5,7 +5,7 @@ import {
   DialogContentText,
   DialogTitle,
   Fab,
-  Grid
+  Grid,
 } from "@material-ui/core";
 import ClearIcon from "@material-ui/icons/Clear";
 import DoneIcon from "@material-ui/icons/Done";
@@ -23,7 +23,8 @@ const ViewEditUserPhoto: React.FunctionComponent<PageProps> = ({
   currentUserProfile,
   setNotification,
   handleLoadUserData,
-  classes
+  setLoadingMessage,
+  classes,
 }) => {
   const [newProfilePicture, setNewProfilePicture] = React.useState<any>(null);
   const [editing, setEditing] = React.useState(false);
@@ -44,6 +45,7 @@ const ViewEditUserPhoto: React.FunctionComponent<PageProps> = ({
   const saveImage = () => {
     if (currentUser && currentUserProfile) {
       if (newProfilePicture) {
+        setLoadingMessage("Updating Profile Picture...");
         // Start the unload
         const newProfilePictureUploadTask = profilePicturesRef
           .child(currentUserProfile.userId)
@@ -65,14 +67,14 @@ const ViewEditUserPhoto: React.FunctionComponent<PageProps> = ({
                 setNotification({
                   type: "info",
                   message: `Upload is paused and ${progress}% done`,
-                  open: true
+                  open: true,
                 });
                 break;
               case firebase.storage.TaskState.RUNNING: // or 'running'
                 setNotification({
                   type: "info",
                   message: `Upload is running and ${progress}% done`,
-                  open: true
+                  open: true,
                 });
                 break;
             }
@@ -81,14 +83,14 @@ const ViewEditUserPhoto: React.FunctionComponent<PageProps> = ({
             setNotification({
               type: "error",
               message: error.message,
-              open: true
+              open: true,
             });
           },
           () => {
             // Upload completed successfully, now we can get the download URL
             newProfilePictureUploadTask.snapshot.ref
               .getDownloadURL()
-              .then(downloadURL => {
+              .then((downloadURL) => {
                 saveImageHelper(currentUser, downloadURL);
               });
           }
@@ -101,7 +103,7 @@ const ViewEditUserPhoto: React.FunctionComponent<PageProps> = ({
         type: "error",
         message:
           "Unable to update profile picture. Try signing out and signing back in.",
-        open: true
+        open: true,
       });
     }
   };
@@ -111,46 +113,50 @@ const ViewEditUserPhoto: React.FunctionComponent<PageProps> = ({
       .updateProfile({ photoURL: newPhotoUrl })
       .then(() => {
         updatePhotoUrlDatabase(user.uid, newPhotoUrl)
-          .then(value => {
+          .then((value) => {
             if (value) {
               setNotification({
                 type: "success",
                 message: "Profile Picture Updated Successfully!",
-                open: true
+                open: true,
               });
               handleLoadUserData(user.uid);
               cancelEditingImage();
+              setLoadingMessage("");
             } else {
               setNotification({
                 type: "warning",
                 message:
                   "Something may have gone wrong while updating your profile picture. It should fix itself, but if your new profile picture is not visiable after a few minutes, please try updating it again.",
-                open: true
+                open: true,
               });
               cancelEditingImage();
+              setLoadingMessage("");
             }
           })
-          .catch(err => {
+          .catch((err) => {
             console.log(err);
             setNotification({
               type: "warning",
               message:
                 "Something may have gone wrong while updating your profile picture. It should fix itself, but if your new profile picture is not visiable after a few minutes, please try updating it again.",
-              open: true
+              open: true,
             });
             cancelEditingImage();
+            setLoadingMessage("");
           });
       })
-      .catch(err => {
+      .catch((err) => {
         console.log(err);
         setNotification({
           type: "error",
           message: `Unable to profile picture. ${
             err.message ? err.message : "Please try again later."
           }`,
-          open: true
+          open: true,
         });
         cancelEditingImage();
+        setLoadingMessage("");
       });
   };
 
@@ -206,27 +212,27 @@ const ViewEditUserPhoto: React.FunctionComponent<PageProps> = ({
             maxFileSize={2000000}
             dropzoneText="Either drag and drop an image file here or click here to upload an image from your device."
             showAlerts={false}
-            onDrop={files => {
+            onDrop={(files) => {
               handleImageChange(files);
               setNotification({
                 type: "success",
                 message: `File ${files.name} successfully added.`,
-                open: true
+                open: true,
               });
             }}
             onDropRejected={(files, evt) => {
               setNotification({
                 type: "error",
                 message: `File ${files[0].name} was rejected. The file may not be supported or may be too big.`,
-                open: true
+                open: true,
               });
             }}
-            onDelete={files => {
+            onDelete={(files) => {
               handleImageChange(null);
               setNotification({
                 type: "info",
                 message: `File ${files.name} removed.`,
-                open: true
+                open: true,
               });
             }}
           ></DropzoneArea>
