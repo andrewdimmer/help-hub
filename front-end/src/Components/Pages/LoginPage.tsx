@@ -24,6 +24,7 @@ const LoginPage: React.FunctionComponent<PageProps> = ({
         phone: user.phoneNumber ? user.phoneNumber : "",
         photoUrl: user.photoURL ? user.photoURL : "",
         zipcode: "",
+        interests: [],
       })
         .then((value) => {
           if (value) {

@@ -7,6 +7,7 @@ import { testInformationMappings } from "./Firebase/Users/testInformationMapping
 import {
   updateDisplayNameDatabase,
   updateEmailDatabase,
+  updateInterestsDatabase,
   updatePhoneDatabase,
   updatePhotoUrlDatabase,
   updateZipcodeDatabase,
@@ -31,6 +32,7 @@ export const update_email_database = updateEmailDatabase;
 export const update_phone_database = updatePhoneDatabase;
 export const update_photo_url_database = updatePhotoUrlDatabase;
 export const update_zipcode_database = updateZipcodeDatabase;
+export const update_interests_database = updateInterestsDatabase;
 
 // Create New Event Groups
 export const create_new_event_group = createNewEventGroup;

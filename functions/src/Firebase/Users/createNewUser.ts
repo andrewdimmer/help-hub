@@ -9,20 +9,36 @@ import { addEmailToUserIdMapping } from "./userInformationMappings";
 export const createNewUserDatabaseObjects = functions.https.onRequest(
   (request, response) => {
     response.setHeader("Access-Control-Allow-Origin", "*");
-    const { userId, displayName, email, phone, photoUrl } = JSON.parse(
-      request.body
-    ) as {
+    const {
+      userId,
+      displayName,
+      email,
+      phone,
+      photoUrl,
+      zipcode,
+      interests,
+    } = JSON.parse(request.body) as {
       userId: string;
       displayName: string;
       email: string;
       phone: string;
       photoUrl: string;
+      zipcode: string;
+      interests: string[];
     };
 
     const promises = [];
     // Add the new user's object in the "users" collection
     promises.push(
-      createNewUserUserObject(userId, displayName, email, phone, photoUrl)
+      createNewUserUserObject(
+        userId,
+        displayName,
+        email,
+        phone,
+        photoUrl,
+        zipcode,
+        interests
+      )
     );
 
     // Create any mappings that might exist for this new user
@@ -42,6 +58,8 @@ export const createNewUserDatabaseObjects = functions.https.onRequest(
  * @param email The email address of the new user.
  * @param phone The phone number of the new user.
  * @param photoUrl The profile picture photoUrl of the new user.
+ * @param zipcode The zip code of the user
+ * @param interests An array of interests of the user
  * @returns true if the new user was created in the database without any errors; false otherwise.
  */
 const createNewUserUserObject = (
@@ -49,13 +67,15 @@ const createNewUserUserObject = (
   displayName: string,
   email: string,
   phone: string,
-  photoUrl: string
+  photoUrl: string,
+  zipcode: string,
+  interests: string[]
 ): Promise<boolean> => {
   return firebaseApp
     .firestore()
     .collection("users")
     .doc(userId)
-    .set({ userId, displayName, email, phone, photoUrl })
+    .set({ userId, displayName, email, phone, photoUrl, zipcode, interests })
     .then(() => true)
     .catch(logAndReturnFalse);
 };

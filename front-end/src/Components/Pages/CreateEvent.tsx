@@ -198,7 +198,7 @@ const CreateEvent: React.FunctionComponent<PageProps> = ({
     } else {
       newCategorySelections.push(input);
     }
-    setCategorySelections(newCategorySelections);
+    setCategorySelections(newCategorySelections.sort());
   };
 
   const saveEvent = () => {

@@ -49,7 +49,7 @@ export const getEventsWithinRadius = functions.https.onRequest(
               while (
                 sortedEvents.length > 0 &&
                 new Date(
-                  `${sortedEvents[0].startDate} ${sortedEvents[0].startTime}`
+                  `${sortedEvents[0].endDate} ${sortedEvents[0].endTime}`
                 ) < now
               ) {
                 const removeMappingFor = sortedEvents.shift();

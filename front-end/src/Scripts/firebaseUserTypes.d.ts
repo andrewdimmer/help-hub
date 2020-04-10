@@ -5,4 +5,5 @@ export declare interface UserProfile {
   phoneNumber: string;
   photoURL: string;
   zipcode: string;
+  interests: string[];
 }

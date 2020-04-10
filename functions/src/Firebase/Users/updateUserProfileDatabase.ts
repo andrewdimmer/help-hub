@@ -241,3 +241,47 @@ const updateZipcodeDatabaseHelper = (
 
   return allSuccessful(promises);
 };
+
+// Start writing Firebase Functions
+// https://firebase.google.com/docs/functions/typescript
+export const updateInterestsDatabase = functions.https.onRequest(
+  (request, response) => {
+    response.setHeader("Access-Control-Allow-Origin", "*");
+    const { userId, newInterests } = JSON.parse(request.body) as {
+      userId: string;
+      newInterests: string[];
+    };
+
+    allSuccessfulResponse(
+      [updateInterestsDatabaseHelper(userId, newInterests)],
+      response
+    );
+  }
+);
+
+/**
+ * updateInterestsDatabaseHelper
+ * @description Updates the main User Object in the "users" collection, and all mappings in the database when the interests are changed.
+ * @param userId The userId of the user that is being updated.
+ * @param newInterests The new interests to set.
+ * @returns true if all the updates were made without errors; false otherwise.
+ */
+const updateInterestsDatabaseHelper = (
+  userId: string,
+  newInterests: string[]
+): Promise<boolean> => {
+  const promises = [];
+
+  // Update the interests in the main User Object in the "users" collection
+  promises.push(
+    firebaseApp
+      .firestore()
+      .collection("users")
+      .doc(userId)
+      .update({ interests: newInterests })
+      .then(() => true)
+      .catch(logAndReturnFalse)
+  );
+
+  return allSuccessful(promises);
+};
