@@ -24,13 +24,22 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
   setNotification,
   setLoadingMessage,
 }) => {
-  const [open, setOpen] = React.useState(false);
+  const filterCategories = categories.concat(["Uncategorized"]);
+  const [filterBoxOpen, setFilterBoxOpen] = React.useState<boolean>(false);
   const [radius, setRadius] = React.useState<number>(20);
+  const [priorRadius, setPriorRadius] = React.useState<number>(-1);
   const [zip, setZip] = React.useState<string>(
     currentUserProfile?.zipcode ? currentUserProfile.zipcode : ""
   );
+  const [priorZip, setPriorZip] = React.useState<string>("zip");
   const [events, setEvents] = React.useState<EventData[] | null>(null);
+  const [visibleEvents, setVisibleEvents] = React.useState<EventData[]>([]);
   const [gettingEvents, setGettingEvents] = React.useState<boolean>(false);
+  const [selectedCategories, setSelectedCategories] = React.useState<string[]>(
+    currentUserProfile?.interests
+      ? currentUserProfile.interests.concat(["Uncategorized"])
+      : filterCategories
+  );
 
   const handleZipChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setZip(event.target.value);
@@ -40,22 +49,45 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
     setRadius(parseFloat(event.target.value));
   };
 
-  const handleOpen = () => {
-    setOpen(true);
+  const handleUpdateSelectedCategories = (input: string) => {
+    const newSelectedCategories = selectedCategories.concat([]);
+    if (selectedCategories.includes(input)) {
+      newSelectedCategories.splice(newSelectedCategories.indexOf(input), 1);
+    } else {
+      newSelectedCategories.push(input);
+    }
+    setSelectedCategories(newSelectedCategories.sort());
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleOpenFilterBox = () => {
+    setFilterBoxOpen(true);
+  };
+
+  const handleCloseFilterBox = () => {
+    setFilterBoxOpen(false);
+  };
+
+  const getPreviousEventDateString = (index: number) => {
+    if (index === 0 || events === null) {
+      return new Date("1970/01/01").toDateString();
+    } else {
+      return new Date(
+        `${events[index - 1].startDate} ${events[index - 1].startTime}`
+      ).toDateString();
+    }
   };
 
   const getEvents = () => {
     if (!gettingEvents) {
-      if (zip.length > 0) {
+      if (zip.length === 5 || zip.length === 6) {
+        setPriorZip(zip);
+        setPriorRadius(radius);
         setGettingEvents(true);
         setLoadingMessage("Getting Upcoming Events...");
         getEventsWithinRadius(zip, radius).then((eventsData) => {
           if (eventsData !== null) {
             setEvents(eventsData);
+            filterByCategory(eventsData);
             setLoadingMessage("");
             setGettingEvents(false);
           } else {
@@ -76,13 +108,43 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
           message: "Please specify a zipcode to find events around.",
           open: true,
         });
-        handleOpen();
+        setEvents([]);
+        handleOpenFilterBox();
       }
     }
   };
 
+  const filterByCategory = (events: EventData[]) => {
+    const newVisibleEvents: EventData[] = [];
+    for (const event of events) {
+      for (const category of selectedCategories) {
+        if (category === "Uncategorized") {
+          if (event.categories.length === 0) {
+            newVisibleEvents.push(event);
+            break;
+          }
+        } else if (event.categories.includes(category)) {
+          newVisibleEvents.push(event);
+          break;
+        }
+      }
+    }
+    setVisibleEvents(newVisibleEvents);
+  };
+
+  const handleFilterEvents = () => {
+    if (zip !== priorZip || radius !== priorRadius) {
+      getEvents();
+    } else {
+      if (events) {
+        filterByCategory(events);
+      }
+    }
+    handleCloseFilterBox();
+  };
+
   if (events === null) {
-    getEvents();
+    setTimeout(getEvents, 1);
   }
 
   return (
@@ -96,21 +158,22 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
         variant="contained"
         size="large"
         className={classes.margined}
-        onClick={handleOpen}
+        onClick={handleOpenFilterBox}
       >
         Filter
       </Button>
-      {!events && (
+      {visibleEvents.length === 0 && (
         <Container className={classes.pageTitle}>
           <Typography variant="h4">
             No events match the current filter.
           </Typography>
         </Container>
       )}
-      {events &&
-        events.map(
+      {visibleEvents.length > 0 &&
+        visibleEvents.map(
           (
             {
+              eventId,
               eventName,
               eventDescription,
               eventContactInfo,
@@ -126,29 +189,41 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
             },
             index
           ) => {
+            const eventStartDateString = new Date(
+              `${startDate} ${startTime}`
+            ).toDateString();
             return (
-              <EventInfo
-                eventName={eventName}
-                eventDesciption={eventDescription}
-                eventDateTime={
-                  startDate + " " + startTime + " - " + endDate + " " + endTime
-                }
-                eventContact={eventContactInfo}
-                eventCategories={categories.toString()}
-                eventLocation={address + ", " + city + ", " + state + " " + zip}
-                classes={classes}
-                number={index}
-                events={events}
-                setEvents={setEvents}
-                setNotification={setNotification}
-              />
+              <Fragment key={eventId}>
+                {eventStartDateString !== getPreviousEventDateString(index) && (
+                  <Container>
+                    <Typography variant="h4">{eventStartDateString}</Typography>
+                  </Container>
+                )}
+                <EventInfo
+                  eventName={eventName}
+                  eventDesciption={eventDescription}
+                  eventDateTime={`${startDate} ${startTime} - ${endDate} ${endTime}`}
+                  eventContact={eventContactInfo}
+                  eventCategories={
+                    categories.length > 0
+                      ? categories.toString().replace(/,/g, ", ")
+                      : "Uncategorized"
+                  }
+                  eventLocation={`${address}, ${city}, ${state} ${zip}`}
+                  classes={classes}
+                  number={index}
+                  events={visibleEvents}
+                  setEvents={setVisibleEvents}
+                  setNotification={setNotification}
+                />
+              </Fragment>
             );
           }
         )}
 
       <Dialog
-        open={open}
-        onClose={handleClose}
+        open={filterBoxOpen}
+        onClose={handleCloseFilterBox}
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">Filter Events</DialogTitle>
@@ -187,14 +262,16 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
             <Typography variant="subtitle1" style={{ marginBottom: "5px" }}>
               Filter by Categories
             </Typography>
-            {categories.map((val, index) => {
+            {filterCategories.map((val) => {
               return (
-                <Grid item>
+                <Grid item key={val}>
                   <FormControlLabel
                     control={
                       <Checkbox
-                        // checked={}
-                        // onChange={}
+                        checked={selectedCategories.includes(val)}
+                        onChange={() => {
+                          handleUpdateSelectedCategories(val);
+                        }}
                         name={val}
                         color="primary"
                       />
@@ -208,16 +285,17 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => {
-              handleClose();
-              getEvents();
-            }}
+            onClick={handleFilterEvents}
             color="primary"
             variant="contained"
           >
             Filter
           </Button>
-          <Button onClick={handleClose} color="primary" variant="contained">
+          <Button
+            onClick={handleCloseFilterBox}
+            color="primary"
+            variant="contained"
+          >
             Cancel
           </Button>
         </DialogActions>

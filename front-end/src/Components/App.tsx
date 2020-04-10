@@ -68,7 +68,7 @@ const App: React.FunctionComponent<AppProps> = ({ theme, toggleTheme }) => {
     }
   };
 
-  loadUserData();
+  setTimeout(loadUserData, 1);
 
   return (
     <Fragment>

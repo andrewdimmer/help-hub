@@ -7,6 +7,7 @@ import ViewEditUserPassword from "../Content/ProfileInformation/ViewEditUserPass
 import ViewEditUserPhone from "../Content/ProfileInformation/ViewEditUserPhone";
 import ViewEditUserPhoto from "../Content/ProfileInformation/ViewEditUserPhoto";
 import ViewEditUserZipcode from "../Content/ProfileInformation/ViewEditUserZipcode";
+import ViewEditUserInterests from "../Content/ProfileInformation/ViewEditUserInterests";
 
 const ProfilePage: React.FunctionComponent<PageProps> = ({
   currentUser,
@@ -80,6 +81,16 @@ const ProfilePage: React.FunctionComponent<PageProps> = ({
             classes={classes}
           />
           <ViewEditUserZipcode
+            currentUser={currentUser}
+            currentUserProfile={currentUserProfile}
+            forceReloadUserData={forceReloadUserData}
+            handleLoadUserData={handleLoadUserData}
+            setPageKey={setPageKey}
+            setLoadingMessage={setLoadingMessage}
+            setNotification={setNotification}
+            classes={classes}
+          />
+          <ViewEditUserInterests
             currentUser={currentUser}
             currentUserProfile={currentUserProfile}
             forceReloadUserData={forceReloadUserData}

@@ -13,6 +13,7 @@ export const createNewUserDatabaseObjects = (userData: {
   phone: string;
   photoUrl: string;
   zipcode: string;
+  interests: string[];
 }): Promise<boolean> => {
   return ky
     .post(

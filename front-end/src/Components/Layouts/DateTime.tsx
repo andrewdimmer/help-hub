@@ -13,6 +13,7 @@ interface DateTimeProps {
     city: string;
     state: string;
     zip: string;
+    volunteersNeeded: number;
   };
   removeDateTime: (index: number) => void;
   handleDateTimeChange: (
@@ -28,6 +29,17 @@ interface DateTimeProps {
       | "state"
       | "zip"
   ) => void;
+
+  validInput: {
+    startDate: boolean;
+    startTime: boolean;
+    endDate: boolean;
+    endTime: boolean;
+    address: boolean;
+    city: boolean;
+    state: boolean;
+    zip: boolean;
+  };
 }
 
 const DateTime: React.FunctionComponent<DateTimeProps> = ({
@@ -35,6 +47,7 @@ const DateTime: React.FunctionComponent<DateTimeProps> = ({
   dateTime,
   removeDateTime,
   handleDateTimeChange,
+  validInput,
 }) => {
   const handleStartDateChange = (
     event: React.ChangeEvent<HTMLInputElement>
@@ -87,6 +100,7 @@ const DateTime: React.FunctionComponent<DateTimeProps> = ({
                     variant="outlined"
                     fullWidth
                     onChange={handleStartDateChange}
+                    error={!validInput.startDate}
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -97,6 +111,7 @@ const DateTime: React.FunctionComponent<DateTimeProps> = ({
                     variant="outlined"
                     fullWidth
                     onChange={handleStartTimeChange}
+                    error={!validInput.startTime}
                   />
                 </Grid>
               </Grid>
@@ -112,6 +127,7 @@ const DateTime: React.FunctionComponent<DateTimeProps> = ({
                     variant="outlined"
                     fullWidth
                     onChange={handleEndDateChange}
+                    error={!validInput.endDate}
                   />
                 </Grid>
                 <Grid item xs={6}>
@@ -122,6 +138,7 @@ const DateTime: React.FunctionComponent<DateTimeProps> = ({
                     variant="outlined"
                     fullWidth
                     onChange={handleEndTimeChange}
+                    error={!validInput.endTime}
                   />
                 </Grid>
               </Grid>
@@ -136,6 +153,7 @@ const DateTime: React.FunctionComponent<DateTimeProps> = ({
                     variant="outlined"
                     fullWidth
                     onChange={handleAddressChange}
+                    error={!validInput.address}
                   />
                 </Grid>
                 <Grid item xs={2} style={{ paddingRight: "1%" }}>
@@ -146,6 +164,7 @@ const DateTime: React.FunctionComponent<DateTimeProps> = ({
                     variant="outlined"
                     fullWidth
                     onChange={handleCityChange}
+                    error={!validInput.city}
                   />
                 </Grid>
                 <Grid item xs={2} style={{ paddingRight: "1%" }}>
@@ -156,6 +175,7 @@ const DateTime: React.FunctionComponent<DateTimeProps> = ({
                     variant="outlined"
                     fullWidth
                     onChange={handleStateChange}
+                    error={!validInput.state}
                   />
                 </Grid>
                 <Grid item xs={2}>
@@ -166,6 +186,7 @@ const DateTime: React.FunctionComponent<DateTimeProps> = ({
                     variant="outlined"
                     fullWidth
                     onChange={handleZipChange}
+                    error={!validInput.zip}
                   />
                 </Grid>
               </Grid>

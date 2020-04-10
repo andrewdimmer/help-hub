@@ -24,6 +24,7 @@ export const getUserProfileDatabaseObject = functions.https.onRequest(
               phoneNumber: data.phone,
               photoURL: data.photoUrl,
               zipcode: data.zipcode,
+              interests: data.interests,
             })
           );
         } else {

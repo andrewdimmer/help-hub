@@ -140,3 +140,31 @@ export const updateZipcodeDatabase = (
       return false;
     });
 };
+
+export const updateInterestsDatabase = (
+  userId: string,
+  newInterests: string[]
+): Promise<boolean> => {
+  return ky
+    .post(
+      "https://us-central1-cathacksvi-gcp.cloudfunctions.net/update_interests_database",
+      {
+        body: JSON.stringify({ userId, newInterests }),
+      }
+    )
+    .then((results) =>
+      results
+        .text()
+        .then(
+          (text) => text.length === "true".length && text.indexOf("true") === 0
+        )
+        .catch((err) => {
+          console.log(err);
+          return false;
+        })
+    )
+    .catch((err) => {
+      console.log(err);
+      return false;
+    });
+};

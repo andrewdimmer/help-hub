@@ -7,6 +7,10 @@ import {
   CreateNewEventGroupFunctionInput,
 } from "./eventTypes";
 import { allSuccessfulResponse } from "../../Helpers/allSuccessful";
+import {
+  createEventMapInZipcode,
+  createEventMapInOrganization,
+} from "./eventRefMappings";
 
 // Start writing Firebase Functions
 // https://firebase.google.com/docs/functions/typescript
@@ -67,42 +71,12 @@ export const createNewEventGroup = functions.https.onRequest(
       );
 
       // Create Event Mapping in the Specified Zip Code's Upcoming Events
-      promises.push(createEventMapInUpcomingEvents(event.zip, event.eventId));
+      promises.push(createEventMapInZipcode(event.zip, event.eventId));
     }
 
     allSuccessfulResponse(promises, response);
   }
 );
-
-const createEventMapInOrganization = (
-  organizationId: string,
-  eventGroupId: string
-): Promise<boolean> => {
-  return firebaseApp
-    .firestore()
-    .collection("organizations")
-    .doc(organizationId)
-    .collection("events")
-    .doc(eventGroupId)
-    .set({ eventGroupId })
-    .then(() => true)
-    .catch(logAndReturnFalse);
-};
-
-const createEventMapInUpcomingEvents = (
-  zipcode: string,
-  eventId: string
-): Promise<boolean> => {
-  return firebaseApp
-    .firestore()
-    .collection("zipcodes")
-    .doc(zipcode)
-    .collection("upcomingEvents")
-    .doc(eventId)
-    .set({ eventId })
-    .then(() => true)
-    .catch(logAndReturnFalse);
-};
 
 const createEventGroup = (eventGroupData: EventGroupData) => {
   return firebaseApp
