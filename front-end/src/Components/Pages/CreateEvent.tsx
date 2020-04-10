@@ -8,9 +8,10 @@ import {
   TextField,
   Typography,
 } from "@material-ui/core";
+import { nanoid } from "nanoid";
 import React, { Fragment } from "react";
 import { PageProps } from ".";
-import { createNewEventDatabase } from "../../Scripts/firebaseCreateEvent";
+import { createNewEventGroup } from "../../Scripts/firebaseCreateNewEvent";
 import categories from "../Content/Categories";
 import DateTime from "../Layouts/DateTime";
 
@@ -18,6 +19,7 @@ const CreateEvent: React.FunctionComponent<PageProps> = ({
   currentUserProfile,
   setNotification,
   handleLoadUserData,
+  setLoadingMessage,
 }) => {
   const [eventName, setEventName] = React.useState<string>("");
   const [eventDescription, setEventDescription] = React.useState<string>("");
@@ -32,6 +34,7 @@ const CreateEvent: React.FunctionComponent<PageProps> = ({
       city: string;
       state: string;
       zip: string;
+      volunteersNeeded: number;
     }[]
   >([
     {
@@ -43,6 +46,7 @@ const CreateEvent: React.FunctionComponent<PageProps> = ({
       city: "",
       state: "",
       zip: "",
+      volunteersNeeded: 1,
     },
   ]);
   const [categorySelections, setCategorySelections] = React.useState<string[]>(
@@ -102,6 +106,7 @@ const CreateEvent: React.FunctionComponent<PageProps> = ({
         city: "",
         state: "",
         zip: "",
+        volunteersNeeded: 1,
       },
     ]);
     setDateTimes(newDateTimes);
@@ -109,7 +114,7 @@ const CreateEvent: React.FunctionComponent<PageProps> = ({
 
   const handleUpdateCategories = (input: string) => {
     const newCategorySelections = categorySelections.concat([]);
-    if (categories.includes(input)) {
+    if (categorySelections.includes(input)) {
       newCategorySelections.splice(newCategorySelections.indexOf(input), 1);
     } else {
       newCategorySelections.push(input);
@@ -118,50 +123,41 @@ const CreateEvent: React.FunctionComponent<PageProps> = ({
   };
 
   const saveEvent = () => {
-    if (currentUserProfile) {
-      createNewEventDatabase({
-        organizationId: currentUserProfile.userId,
-        eventName,
-        eventDescription,
-        eventContactInfo: contactInfo,
-        events: dateTimes,
-        categories: categorySelections,
-        volunteer: null,
-      })
-        .then((value) => {
-          if (value) {
-            setNotification({
-              type: "success",
-              message: "Event Created Successfully!",
-              open: true,
-            });
-            handleLoadUserData(currentUserProfile.userId);
-            handleClearData();
-          } else {
-            setNotification({
-              type: "warning",
-              message:
-                "Something may have gone wrong while creating your event. It should fix itself, but if your new event is not visiable after a few minutes, please try updating it again.",
-              open: true,
-            });
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          setNotification({
-            type: "warning",
-            message:
-              "Something may have gone wrong while creating your event. It should fix itself, but if your new event is not visiable after a few minutes, please try updating it again.",
-            open: true,
-          });
+    setLoadingMessage(`Creating Event${dateTimes.length > 1 ? "s" : ""}...`);
+    createNewEventGroup({
+      organizationId: currentUserProfile?.userId
+        ? currentUserProfile.userId
+        : nanoid(),
+      eventGroupId: nanoid(),
+      eventName,
+      eventDescription,
+      eventContactInfo: contactInfo,
+      events: dateTimes.map((dateTime) => {
+        return { ...dateTime, eventId: nanoid() };
+      }),
+      categories: categorySelections,
+    })
+      .then(() => {
+        handleClearData();
+        setNotification({
+          type: "success",
+          message: `Event${
+            dateTimes.length > 1 ? "s" : ""
+          } Created Successfully!`,
+          open: true,
         });
-    } else {
-      setNotification({
-        type: "error",
-        message: "Unable to create event. Try signing out and signing back in.",
-        open: true,
+        setLoadingMessage("");
+      })
+      .catch((err) => {
+        setNotification({
+          type: "error",
+          message: `An error occured while creating event${
+            dateTimes.length > 1 ? "s" : ""
+          }. Please try again later.`,
+          open: true,
+        });
+        setLoadingMessage("");
       });
-    }
   };
 
   const handleClearData = () => {
@@ -177,9 +173,10 @@ const CreateEvent: React.FunctionComponent<PageProps> = ({
         city: "",
         state: "",
         zip: "",
+        volunteersNeeded: 1,
       },
     ]);
-    setEventDescription("");
+    setEventName("");
     setEventDescription("");
   };
 
@@ -234,7 +231,6 @@ const CreateEvent: React.FunctionComponent<PageProps> = ({
                 );
               })}
 
-              {/* TODO: Add other datetimes here */}
               <br />
               <Button
                 variant="contained"

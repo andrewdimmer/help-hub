@@ -4,7 +4,7 @@ import {
   Grid,
   makeStyles,
   Theme,
-  Typography
+  Typography,
 } from "@material-ui/core";
 import React, { Fragment } from "react";
 
@@ -22,12 +22,13 @@ const useStyles = makeStyles((theme: Theme) =>
       bottom: 0,
       left: 0,
       right: 0,
+      zIndex: 1350,
       color: theme.palette.getContrastText(theme.palette.background.default),
-      backgroundColor: theme.palette.background.default
+      backgroundColor: theme.palette.background.default,
     },
     loadingCircle: {
-      margin: "40px"
-    }
+      margin: "40px",
+    },
   })
 );
 
@@ -37,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
  * @param param0 A LoadingProps object with the busy message to display on the loading screen
  */
 const LoadingScreen: React.FunctionComponent<LoadingProps> = ({
-  loadingMessage: busyMessage
+  loadingMessage: busyMessage,
 }) => {
   const localClasses = useStyles();
 
@@ -45,6 +46,7 @@ const LoadingScreen: React.FunctionComponent<LoadingProps> = ({
     return (
       <Grid
         container
+        direction="column"
         justify="center"
         alignItems="center"
         className={localClasses.loadingContainer}
@@ -54,6 +56,8 @@ const LoadingScreen: React.FunctionComponent<LoadingProps> = ({
             color="primary"
             className={localClasses.loadingCircle}
           />
+        </Grid>
+        <Grid item>
           <Typography variant="h3">{busyMessage}</Typography>
         </Grid>
       </Grid>

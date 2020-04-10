@@ -1,10 +1,8 @@
 import { Button, Container, Typography } from "@material-ui/core";
 import React, { Fragment } from "react";
 import { firebaseApp } from "../Scripts/firebaseConfig";
-import {
-  getUserProfileDatabase,
-  UserProfile
-} from "../Scripts/firebaseGetUserProfile";
+import { getUserProfileDatabase } from "../Scripts/firebaseGetUserProfile";
+import { UserProfile } from "../Scripts/firebaseUserTypes";
 import { styles } from "../Styles";
 import NavBar from "./Layouts/NavBar";
 import LoadingScreen from "./Misc/LoadingScreen";
@@ -20,7 +18,7 @@ const App: React.FunctionComponent<AppProps> = ({ theme, toggleTheme }) => {
   const [notification, setNotification] = React.useState<NotificationMessage>({
     type: "info",
     message: "",
-    open: false
+    open: false,
   });
   const [loadingMessage, setLoadingMessage] = React.useState<string>("");
   const [pageKey, setPageKey] = React.useState<string>("home");
@@ -29,7 +27,7 @@ const App: React.FunctionComponent<AppProps> = ({ theme, toggleTheme }) => {
   );
   const [
     currentUserProfile,
-    setCurrentUserProfile
+    setCurrentUserProfile,
   ] = React.useState<UserProfile | null>(null);
   const [reloadUserData, setReloadUserData] = React.useState<boolean>(true);
 
@@ -43,7 +41,7 @@ const App: React.FunctionComponent<AppProps> = ({ theme, toggleTheme }) => {
   const handleLoadUserData = (userId: string) => {
     if (userId) {
       getUserProfileDatabase(userId)
-        .then(data => {
+        .then((data) => {
           setCurrentUserProfile(data);
         })
         .catch(() => {
@@ -56,7 +54,7 @@ const App: React.FunctionComponent<AppProps> = ({ theme, toggleTheme }) => {
     if (reloadUserData) {
       const oneTimeLoadListener = firebaseApp
         .auth()
-        .onAuthStateChanged(user => {
+        .onAuthStateChanged((user) => {
           if (user) {
             setCurrentUser(user);
             handleLoadUserData(user?.uid);

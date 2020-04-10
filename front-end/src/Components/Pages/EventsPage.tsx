@@ -1,37 +1,43 @@
-import React, { Fragment } from "react";
 import {
-  Box,
-  Grid,
-  Typography,
   Button,
-  Card,
-  AppBar,
-  Tabs,
-  Tab,
-  Modal,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  TextField,
-  DialogActions,
-  FormControlLabel,
   Checkbox,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  FormControlLabel,
+  Grid,
+  TextField,
+  Typography,
 } from "@material-ui/core";
-import Event from "../Layouts/Event";
+import React, { Fragment } from "react";
+import { PageProps } from ".";
+import { EventData } from "../../Scripts/firebaseEventTypes";
+import { getEventsWithinRadius } from "../../Scripts/firebaseGetEvents";
 import categories from "../Content/Categories";
+import EventInfo from "../Layouts/EventInfo";
 
-const EventsPage: React.FunctionComponent = () => {
+const EventsPage: React.FunctionComponent<PageProps> = ({
+  classes,
+  currentUserProfile,
+  setNotification,
+  setLoadingMessage,
+}) => {
   const [open, setOpen] = React.useState(false);
-  const [radius, setRadius] = React.useState<string>();
-  const [zip, setZip] = React.useState<string>();
+  const [radius, setRadius] = React.useState<number>(20);
+  const [zip, setZip] = React.useState<string>(
+    currentUserProfile?.zipcode ? currentUserProfile.zipcode : ""
+  );
+  const [events, setEvents] = React.useState<EventData[] | null>(null);
+  const [gettingEvents, setGettingEvents] = React.useState<boolean>(false);
 
   const handleZipChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setZip(event.target.value);
   };
 
   const handleRadiusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRadius(event.target.value);
+    setRadius(parseFloat(event.target.value));
   };
 
   const handleOpen = () => {
@@ -41,49 +47,146 @@ const EventsPage: React.FunctionComponent = () => {
   const handleClose = () => {
     setOpen(false);
   };
+
+  const getEvents = () => {
+    if (!gettingEvents) {
+      if (zip.length > 0) {
+        setGettingEvents(true);
+        setLoadingMessage("Getting Upcoming Events...");
+        getEventsWithinRadius(zip, radius).then((eventsData) => {
+          if (eventsData !== null) {
+            setEvents(eventsData);
+            setLoadingMessage("");
+            setGettingEvents(false);
+          } else {
+            setNotification({
+              type: "error",
+              message:
+                "Error getting events. Please check your filter settings or try again later.",
+              open: true,
+            });
+            setEvents([]);
+            setLoadingMessage("");
+            setGettingEvents(false);
+          }
+        });
+      } else {
+        setNotification({
+          type: "error",
+          message: "Please specify a zipcode to find events around.",
+          open: true,
+        });
+        handleOpen();
+      }
+    }
+  };
+
+  if (events === null) {
+    getEvents();
+  }
+
   return (
     <Fragment>
-      <Box mx="5%" my="2.5%">
-        <Card style={{ padding: "1.5%" }}>
-          <Grid container direction="row">
-            <Grid item xs={11}>
-              <Typography variant="h4" style={{ marginBottom: "1%" }}>
-                Events near you
-              </Typography>
-            </Grid>
-            <Grid item xs={1}>
-              <Button variant="contained" color="primary" onClick={handleOpen}>
-                Filter
-              </Button>
-            </Grid>
-          </Grid>
-          <Grid container direction="column" spacing={4}>
-            <Grid item xs={12}>
-              <Box>
-                <Event
-                  eventName="Cyber Starters"
-                  eventDesciption="Help senior citizens with new technology! Work with seniors one on one to answer their questions."
-                  eventDateTime="May 5th, 2020, 6:00PM"
-                  eventLocation="6495 Clarkston Rd, Village of Clarkston, MI 48346"
-                ></Event>
-              </Box>
-            </Grid>
-          </Grid>
-        </Card>
-      </Box>
+      <Container className={classes.pageTitle}>
+        <Typography variant="h3">Volunteer Here!</Typography>
+      </Container>
+      <Button
+        color="primary"
+        fullWidth
+        variant="contained"
+        size="large"
+        className={classes.margined}
+        onClick={handleOpen}
+      >
+        Filter
+      </Button>
+      {!events && (
+        <Container className={classes.pageTitle}>
+          <Typography variant="h4">
+            No events match the current filter.
+          </Typography>
+        </Container>
+      )}
+      {events &&
+        events.map(
+          (
+            {
+              eventName,
+              eventDescription,
+              eventContactInfo,
+              categories,
+              startDate,
+              startTime,
+              endDate,
+              endTime,
+              address,
+              city,
+              state,
+              zip,
+            },
+            index
+          ) => {
+            return (
+              <EventInfo
+                eventName={eventName}
+                eventDesciption={eventDescription}
+                eventDateTime={
+                  startDate + " " + startTime + " - " + endDate + " " + endTime
+                }
+                eventContact={eventContactInfo}
+                eventCategories={categories.toString()}
+                eventLocation={address + ", " + city + ", " + state + " " + zip}
+                classes={classes}
+                number={index}
+                events={events}
+                setEvents={setEvents}
+                setNotification={setNotification}
+              />
+            );
+          }
+        )}
+
       <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Categories</DialogTitle>
+        <DialogTitle id="form-dialog-title">Filter Events</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            <Typography variant="subtitle1">
-              <em>Select all that apply to this event</em>
-            </Typography>
-          </DialogContentText>
           <Grid container direction="column">
+            <Grid item>
+              <Typography variant="subtitle1" style={{ marginBottom: "5px" }}>
+                Filter by Location
+              </Typography>
+            </Grid>
+            <Grid item>
+              <TextField
+                id="zip"
+                label="Zip Code"
+                variant="outlined"
+                fullWidth
+                defaultValue={zip}
+                error={zip.length === 0}
+                helperText="Please enter a valid zip code to view events."
+                onChange={handleZipChange}
+                style={{ marginBottom: "10px" }}
+              />
+            </Grid>
+            <Grid item>
+              <TextField
+                id="radius"
+                label="Radius in miles"
+                variant="outlined"
+                fullWidth
+                type="number"
+                inputProps={{ max: 50, min: 0 }}
+                defaultValue={radius}
+                onChange={handleRadiusChange}
+              />
+            </Grid>
+            <Typography variant="subtitle1" style={{ marginBottom: "5px" }}>
+              Filter by Categories
+            </Typography>
             {categories.map((val, index) => {
               return (
                 <Grid item>
@@ -101,36 +204,17 @@ const EventsPage: React.FunctionComponent = () => {
                 </Grid>
               );
             })}
-            <Grid item>
-              <Typography variant="subtitle1" style={{ marginBottom: "5px" }}>
-                Location filter by zip code
-              </Typography>
-            </Grid>
-            <Grid item>
-              <TextField
-                id="zip"
-                label="Zip Code"
-                variant="outlined"
-                fullWidth
-                defaultValue={zip}
-                onChange={handleZipChange}
-                style={{ marginBottom: "10px" }}
-              />
-            </Grid>
-            <Grid item>
-              <TextField
-                id="radius"
-                label="Radius in miles"
-                variant="outlined"
-                fullWidth
-                defaultValue={radius}
-                onChange={handleRadiusChange}
-              />
-            </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary" variant="contained">
+          <Button
+            onClick={() => {
+              handleClose();
+              getEvents();
+            }}
+            color="primary"
+            variant="contained"
+          >
             Filter
           </Button>
           <Button onClick={handleClose} color="primary" variant="contained">

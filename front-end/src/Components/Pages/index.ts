@@ -3,15 +3,15 @@ import { OverridableComponent } from "@material-ui/core/OverridableComponent";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import HomeIcon from "@material-ui/icons/Home";
+import { UserProfile } from "../../Scripts/firebaseUserTypes";
 import { NotificationMessage } from "../Misc/Notifications";
+import CreateEvent from "./CreateEvent";
 import ErrorPage from "./ErrorPage";
+import EventsPage from "./EventsPage";
 import HomePage from "./HomePage";
 import LoginPage from "./LoginPage";
 import LogoutPage from "./LogoutPage";
 import ProfilePage from "./ProfilePage";
-import EventsPage from "./EventsPage";
-import CreateEvent from "./CreateEvent";
-import { UserProfile } from "../../Scripts/firebaseGetUserProfile";
 
 export declare interface PageProps {
   setPageKey: (pageKey: string) => void;

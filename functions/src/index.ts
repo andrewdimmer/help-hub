@@ -1,5 +1,8 @@
 import * as functions from "firebase-functions";
+import { createNewEventGroup } from "./Firebase/Events/createNewEvents";
+import { getEventsWithinRadius } from "./Firebase/Events/getEventsWithinRadius";
 import { createNewUserDatabaseObjects } from "./Firebase/Users/createNewUser";
+import { getUserProfileDatabaseObject } from "./Firebase/Users/getUserProfile";
 import { testInformationMappings } from "./Firebase/Users/testInformationMappings";
 import {
   updateDisplayNameDatabase,
@@ -8,12 +11,10 @@ import {
   updatePhotoUrlDatabase,
   updateZipcodeDatabase,
 } from "./Firebase/Users/updateUserProfileDatabase";
-import { getUserProfileDatabaseObject } from "./Firebase/Users/getUserProfile";
 import {
-  testZipcodeFunctions,
   testGetZipCodesWithinRadius50,
+  testZipcodeFunctions,
 } from "./ZipCodes/testGetZipCodesWithinRadius";
-import { getEventsWithinRadius } from "./Firebase/Events/getEventsWithinRadius";
 
 // Start writing Firebase Functions
 // https://firebase.google.com/docs/functions/typescript
@@ -30,6 +31,9 @@ export const update_email_database = updateEmailDatabase;
 export const update_phone_database = updatePhoneDatabase;
 export const update_photo_url_database = updatePhotoUrlDatabase;
 export const update_zipcode_database = updateZipcodeDatabase;
+
+// Create New Event Groups
+export const create_new_event_group = createNewEventGroup;
 
 // Get User Profile Data
 export const get_user_profile_database = getUserProfileDatabaseObject;

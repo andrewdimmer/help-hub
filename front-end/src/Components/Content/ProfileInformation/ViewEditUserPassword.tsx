@@ -9,7 +9,7 @@ const ViewEditUserPassword: React.FunctionComponent<PageProps> = ({
   currentUser,
   setNotification,
   setLoadingMessage,
-  classes
+  classes,
 }) => {
   const [password, setPassword] = React.useState<string>("");
   const [password2, setPassword2] = React.useState<string>("");
@@ -32,15 +32,17 @@ const ViewEditUserPassword: React.FunctionComponent<PageProps> = ({
   const savePassword = () => {
     if (currentUser) {
       if (password === password2) {
+        setLoadingMessage("Updating Password...");
         currentUser
           .updatePassword(password)
           .then(() => {
             setNotification({
               type: "success",
               message: "Password Updated Successfully!",
-              open: true
+              open: true,
             });
             cancelEditingPassword();
+            setLoadingMessage("");
           })
           .catch((err: any) => {
             console.log(err);
@@ -49,14 +51,16 @@ const ViewEditUserPassword: React.FunctionComponent<PageProps> = ({
               message: `Unable to update password. ${
                 err.message ? err.message : "Please try again later."
               }`,
-              open: true
+              open: true,
             });
+            cancelEditingPassword();
+            setLoadingMessage("");
           });
       } else {
         setNotification({
           type: "error",
           message: "Unable to update password. Passwords do not match.",
-          open: true
+          open: true,
         });
       }
     } else {
@@ -64,7 +68,7 @@ const ViewEditUserPassword: React.FunctionComponent<PageProps> = ({
         type: "error",
         message:
           "Unable to update password. Try signing out and signing back in.",
-        open: true
+        open: true,
       });
     }
   };

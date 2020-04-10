@@ -72,7 +72,7 @@ const LoginPage: React.FunctionComponent<PageProps> = ({
   const existingUserCallback = (authResult: firebase.auth.UserCredential) => {
     handleLoadUserData(authResult.user?.uid ? authResult.user.uid : "");
     forceReloadUserData();
-    setPageKey("profile");
+    setPageKey("home");
     setNotification({
       type: "success",
       message: "Successfully Signed In",
