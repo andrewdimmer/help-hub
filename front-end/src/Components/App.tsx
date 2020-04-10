@@ -30,7 +30,6 @@ const App: React.FunctionComponent<AppProps> = ({ theme, toggleTheme }) => {
     setCurrentUserProfile,
   ] = React.useState<UserProfile | null>(null);
   const [reloadUserData, setReloadUserData] = React.useState<boolean>(true);
-  const [events, setEvents] = React.useState<any>([]);
 
   const PageContent = getPageComponent(pageKey);
   const classes = styles();
@@ -90,8 +89,6 @@ const App: React.FunctionComponent<AppProps> = ({ theme, toggleTheme }) => {
           currentUser={currentUser}
           currentUserProfile={currentUserProfile}
           classes={classes}
-          events={events}
-          setEvents={setEvents}
         />
         {pageKey !== "home" && (
           <Button

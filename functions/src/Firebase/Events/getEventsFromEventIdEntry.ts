@@ -1,10 +1,11 @@
 import firebaseApp from "../firebaseConfig";
 
-export const getEventsFromCollection = (
-  startingRef: firebase.firestore.DocumentData
+export const getEventsFromEventRefCollection = (
+  startingRef: firebase.firestore.CollectionReference<
+    firebase.firestore.DocumentData
+  >
 ): Promise<Array<firebase.firestore.DocumentData> | null> => {
   return startingRef
-    .collection("events")
     .get()
     .then((eventRefs) => {
       const events: Array<firebase.firestore.DocumentData | null> = [];
@@ -42,5 +43,9 @@ export const getEventsFromCollection = (
         }
         return eventResultsClean;
       });
+    })
+    .catch((err) => {
+      console.log(err);
+      return null;
     });
 };
