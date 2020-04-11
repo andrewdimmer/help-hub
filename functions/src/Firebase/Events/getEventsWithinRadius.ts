@@ -16,12 +16,14 @@ export const getEventsWithinRadius = functions.https.onRequest(
       radius: number;
     };
 
+    // Get Zip Codes within Radius
     const entryPromise = getZipCodesWithinRadius(zipcode, radius)
       .then((zipcodes) => {
         const zipcodePromises = zipcodes.map(({ zip }) => {
           return firebaseApp.firestore().collection("zipcodes").doc(zip);
         });
 
+        // Get Event Refs for Each Zip Code
         const promises = Promise.all(zipcodePromises).then((values) => {
           const zipcodeEvents: Promise<
             firebase.firestore.DocumentData[] | null
@@ -33,6 +35,8 @@ export const getEventsWithinRadius = functions.https.onRequest(
               )
             );
           }
+
+          // Get Events from Event Refs, and create a single array
           const promises2 = Promise.all(zipcodeEvents).then(
             (zipcodeEventsResults) => {
               const events: Array<firebase.firestore.DocumentData> = [];
@@ -44,7 +48,10 @@ export const getEventsWithinRadius = functions.https.onRequest(
                 }
               }
 
+              // Sort the events by start date
               const sortedEvents = sortEventsByStartDate(events as EventData[]);
+
+              // Remove events that have already happened
               const now = new Date();
               while (
                 sortedEvents.length > 0 &&
@@ -64,7 +71,10 @@ export const getEventsWithinRadius = functions.https.onRequest(
                 }
               }
 
-              response.status(200).send({ events: sortedEvents });
+              // Return events.
+              response
+                .status(200)
+                .send(JSON.stringify({ events: sortedEvents }));
             }
           );
           console.log(promises2);
@@ -73,7 +83,7 @@ export const getEventsWithinRadius = functions.https.onRequest(
       })
       .catch((err) => {
         console.log(err);
-        response.status(200).send(null);
+        response.status(500).send(null);
       });
     console.log(entryPromise);
   }
