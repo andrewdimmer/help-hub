@@ -4,15 +4,7 @@ import DoneIcon from "@material-ui/icons/Done";
 import EditIcon from "@material-ui/icons/Edit";
 import React, { Fragment } from "react";
 import { updateOrganizationEmailDatabase } from "../../../Scripts/firebaseOrganizationUpdates";
-import { PageProps } from "../../Pages";
-
-declare interface ViewEditOrganizationInfoProps {
-  currentOrganizationData: any;
-  setNotification: any;
-  handleLoadOrganizationData: any;
-  setLoadingMessage: any;
-  classes: any;
-}
+import { ViewEditOrganizationInfoProps } from "../../Layouts/EditOrganization";
 
 const ViewEditOrganizationEmail: React.FunctionComponent<ViewEditOrganizationInfoProps> = ({
   currentOrganizationData,
@@ -22,9 +14,7 @@ const ViewEditOrganizationEmail: React.FunctionComponent<ViewEditOrganizationInf
   classes,
 }) => {
   const [organizationEmail, setOrganizationEmail] = React.useState<string>(
-    currentOrganizationData?.organizationEmail
-      ? currentOrganizationData.organizationEmail
-      : ""
+    currentOrganizationData?.email ? currentOrganizationData.email : ""
   );
   const [editing, setEditing] = React.useState(!organizationEmail);
 
@@ -39,9 +29,7 @@ const ViewEditOrganizationEmail: React.FunctionComponent<ViewEditOrganizationInf
   const cancelEditingOrganizationEmail = () => {
     cancelEditing();
     setOrganizationEmail(
-      currentOrganizationData?.organizationEmail
-        ? currentOrganizationData.organizationEmail
-        : ""
+      currentOrganizationData?.email ? currentOrganizationData.email : ""
     );
   };
 
@@ -59,7 +47,7 @@ const ViewEditOrganizationEmail: React.FunctionComponent<ViewEditOrganizationInf
               message: "Organization Email Updated Successfully!",
               open: true,
             });
-            handleLoadOrganizationData(currentOrganizationData.organizationId);
+            handleLoadOrganizationData();
             cancelEditing();
             setLoadingMessage("");
           } else {

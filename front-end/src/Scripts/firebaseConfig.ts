@@ -15,3 +15,8 @@ export const profilePicturesRef = firebaseApp
   .storage()
   .ref()
   .child("profilePictures");
+
+export const organizationProfilePicturesRef = firebaseApp
+  .storage()
+  .ref()
+  .child("organizationProfilePictures");

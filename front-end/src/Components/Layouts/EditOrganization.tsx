@@ -1,58 +1,59 @@
 import {
-  Button,
-  Card,
-  Container,
-  Grid,
-  Typography,
-  ListItem,
-  ListItemAvatar,
-  Avatar,
-  ListItemText,
-  Fab,
-  makeStyles,
-  Dialog,
   AppBar,
-  Toolbar,
+  Container,
+  Dialog,
+  Grid,
   IconButton,
-  List,
-  Divider,
+  Toolbar,
+  Typography,
 } from "@material-ui/core";
-import React, { Fragment } from "react";
-import { NotificationMessage } from "../Misc/Notifications";
-import EditIcon from "@material-ui/icons/Edit";
-import classes from "*.module.css";
 import CloseIcon from "@material-ui/icons/Close";
+import React, { Fragment } from "react";
+import { OrganizationDataWithManagers } from "../../Scripts/firebaseOrganizationTypes";
 import ViewEditOrganizationDescription from "../Content/OrganizationInformation/ViewEditOrganizationDescription";
 import ViewEditOrganizationEmail from "../Content/OrganizationInformation/ViewEditOrganizationEmail";
+import ViewEditOrganizationName from "../Content/OrganizationInformation/ViewEditOrganizationName";
 import ViewEditOrganizationPhone from "../Content/OrganizationInformation/ViewEditOrganizationPhone";
 import ViewEditOrganizationPhoto from "../Content/OrganizationInformation/ViewEditOrganizationPhoto";
-import ViewEditOrganizationName from "../Content/OrganizationInformation/ViewEditOrganizationName";
-interface EventInfoProps {
+import { NotificationMessage } from "../Misc/Notifications";
+
+declare interface EditOrganizationProps {
   setNotification: (notification: NotificationMessage) => void;
-  currentOrganizationData: any;
-  setCurrentOrganizationData: any;
-  setLoadingMessage: any;
-  handleLoadOrganizationData: any;
+  currentOrganizationData: OrganizationDataWithManagers;
+  currentOrganizationId: string;
+  setCurrentOrganizationId: (organizationId: string) => void;
+  setLoadingMessage: (loadingMessage: string) => void;
+  handleLoadOrganizationData: () => void;
   classes: any;
 }
 
-const EditOrganization: React.FunctionComponent<EventInfoProps> = ({
+export declare interface ViewEditOrganizationInfoProps {
+  currentOrganizationData: OrganizationDataWithManagers;
+  setNotification: (notification: NotificationMessage) => void;
+
+  handleLoadOrganizationData: () => void;
+  setLoadingMessage: (loadingMessage: string) => void;
+  classes: any;
+}
+
+const EditOrganization: React.FunctionComponent<EditOrganizationProps> = ({
   setNotification,
   currentOrganizationData,
-  setCurrentOrganizationData,
+  currentOrganizationId,
+  setCurrentOrganizationId,
   setLoadingMessage,
   handleLoadOrganizationData,
   classes,
 }) => {
   const handleClose = () => {
-    setCurrentOrganizationData(null);
+    setCurrentOrganizationId("");
   };
 
   return (
     <Fragment>
       <Dialog
         fullScreen
-        open={currentOrganizationData !== null}
+        open={currentOrganizationId.length > 0}
         onClose={handleClose}
       >
         <AppBar className={classes.appBar}>
@@ -70,22 +71,20 @@ const EditOrganization: React.FunctionComponent<EventInfoProps> = ({
             </Typography>
           </Toolbar>
         </AppBar>
+        <Container className={classes.marginedPadded}>.</Container>
         <Container className={classes.pageTitle}>
           <Typography variant="h3">Organization Information</Typography>
         </Container>
         <Container>
           <Grid container spacing={6}>
             <Grid item xs={12} sm={12} md={4} lg={3}>
-              {/* <ViewEditOrganizationPhoto
-            currentOrganizationData={currentOrganizationData}
-            currentUserProfile={currentUserProfile}
-            forceReloadUserData={forceReloadUserData}
-            handleLoadUserData={handleLoadUserData}
-            setPageKey={setPageKey}
-            setLoadingMessage={setLoadingMessage}
-            setNotification={setNotification}
-            classes={classes}
-          /> */}
+              <ViewEditOrganizationPhoto
+                currentOrganizationData={currentOrganizationData}
+                setNotification={setNotification}
+                handleLoadOrganizationData={handleLoadOrganizationData}
+                setLoadingMessage={setLoadingMessage}
+                classes={classes}
+              />
             </Grid>
             <Grid item xs={12} sm={12} md={8} lg={9}>
               <ViewEditOrganizationName

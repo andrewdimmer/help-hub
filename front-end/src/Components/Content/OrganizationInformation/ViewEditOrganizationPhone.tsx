@@ -4,15 +4,7 @@ import DoneIcon from "@material-ui/icons/Done";
 import EditIcon from "@material-ui/icons/Edit";
 import React, { Fragment } from "react";
 import { updateOrganizationPhoneDatabase } from "../../../Scripts/firebaseOrganizationUpdates";
-import { PageProps } from "../../Pages";
-
-declare interface ViewEditOrganizationInfoProps {
-  currentOrganizationData: any;
-  setNotification: any;
-  handleLoadOrganizationData: any;
-  setLoadingMessage: any;
-  classes: any;
-}
+import { ViewEditOrganizationInfoProps } from "../../Layouts/EditOrganization";
 
 const ViewEditOrganizationPhone: React.FunctionComponent<ViewEditOrganizationInfoProps> = ({
   currentOrganizationData,
@@ -22,9 +14,7 @@ const ViewEditOrganizationPhone: React.FunctionComponent<ViewEditOrganizationInf
   classes,
 }) => {
   const [organizationPhone, setOrganizationPhone] = React.useState<string>(
-    currentOrganizationData?.organizationPhone
-      ? currentOrganizationData.organizationPhone
-      : ""
+    currentOrganizationData?.phone ? currentOrganizationData.phone : ""
   );
   const [editing, setEditing] = React.useState(!organizationPhone);
 
@@ -39,9 +29,7 @@ const ViewEditOrganizationPhone: React.FunctionComponent<ViewEditOrganizationInf
   const cancelEditingOrganizationPhone = () => {
     cancelEditing();
     setOrganizationPhone(
-      currentOrganizationData?.organizationPhone
-        ? currentOrganizationData.organizationPhone
-        : ""
+      currentOrganizationData?.phone ? currentOrganizationData.phone : ""
     );
   };
 
@@ -59,7 +47,7 @@ const ViewEditOrganizationPhone: React.FunctionComponent<ViewEditOrganizationInf
               message: "Organization Phone Updated Successfully!",
               open: true,
             });
-            handleLoadOrganizationData(currentOrganizationData.organizationId);
+            handleLoadOrganizationData();
             cancelEditing();
             setLoadingMessage("");
           } else {

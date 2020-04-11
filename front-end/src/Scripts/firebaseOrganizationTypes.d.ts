@@ -3,7 +3,7 @@ import { UserPublicProfile } from "./firebaseUserTypes";
 export declare interface OrganizationData {
   organizationId: string;
   organizationName: string;
-  organizationDesciption: string;
+  organizationDescription: string;
   email: string;
   phone: string;
   photoUrl: string;

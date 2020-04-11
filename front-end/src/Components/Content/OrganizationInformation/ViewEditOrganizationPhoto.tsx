@@ -13,16 +13,16 @@ import EditIcon from "@material-ui/icons/Edit";
 import firebase from "firebase";
 import { DropzoneArea } from "material-ui-dropzone";
 import React, { Fragment } from "react";
-import { profilePicturesRef } from "../../../Scripts/firebaseConfig";
-import { updatePhotoUrlDatabase } from "../../../Scripts/firebaseProfileUpdates";
+import { organizationProfilePicturesRef } from "../../../Scripts/firebaseConfig";
+import { OrganizationDataWithManagers } from "../../../Scripts/firebaseOrganizationTypes";
+import { updateOrganizationPhotoUrlDatabase } from "../../../Scripts/firebaseOrganizationUpdates";
+import { ViewEditOrganizationInfoProps } from "../../Layouts/EditOrganization";
 import SquareAvatar from "../../Misc/SquareAvatar";
-import { PageProps } from "../../Pages";
 
-const ViewEditOrganizationPhoto: React.FunctionComponent<PageProps> = ({
-  currentUser,
-  currentUserProfile,
+const ViewEditOrganizationPhoto: React.FunctionComponent<ViewEditOrganizationInfoProps> = ({
+  currentOrganizationData,
   setNotification,
-  handleLoadUserData,
+  handleLoadOrganizationData,
   setLoadingMessage,
   classes,
 }) => {
@@ -43,16 +43,16 @@ const ViewEditOrganizationPhoto: React.FunctionComponent<PageProps> = ({
   };
 
   const saveImage = () => {
-    if (currentUser && currentUserProfile) {
+    if (currentOrganizationData) {
       if (newProfilePicture) {
-        setLoadingMessage("Updating Profile Picture...");
+        setLoadingMessage("Updating Organization Profile Picture...");
         // Start the unload
-        const newProfilePictureUploadTask = profilePicturesRef
-          .child(currentUserProfile.userId)
+        const newOrganizationProfilePictureUploadTask = organizationProfilePicturesRef
+          .child(currentOrganizationData.organizationId)
           .put(newProfilePicture);
 
         // Listen for state changes, errors, and completion of the upload.
-        newProfilePictureUploadTask.on(
+        newOrganizationProfilePictureUploadTask.on(
           firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
           (snapshot: {
             bytesTransferred: number;
@@ -88,71 +88,58 @@ const ViewEditOrganizationPhoto: React.FunctionComponent<PageProps> = ({
           },
           () => {
             // Upload completed successfully, now we can get the download URL
-            newProfilePictureUploadTask.snapshot.ref
+            newOrganizationProfilePictureUploadTask.snapshot.ref
               .getDownloadURL()
               .then((downloadURL) => {
-                saveImageHelper(currentUser, downloadURL);
+                saveImageHelper(currentOrganizationData, downloadURL);
               });
           }
         );
       } else {
-        saveImageHelper(currentUser, "");
+        saveImageHelper(currentOrganizationData, "");
       }
     } else {
       setNotification({
         type: "error",
         message:
-          "Unable to update profile picture. Try signing out and signing back in.",
+          "Unable to update organization profile picture. Try signing out and signing back in.",
         open: true,
       });
     }
   };
 
-  const saveImageHelper = (user: firebase.User, newPhotoUrl: string) => {
-    user
-      .updateProfile({ photoURL: newPhotoUrl })
-      .then(() => {
-        updatePhotoUrlDatabase(user.uid, newPhotoUrl)
-          .then((value) => {
-            if (value) {
-              setNotification({
-                type: "success",
-                message: "Profile Picture Updated Successfully!",
-                open: true,
-              });
-              handleLoadUserData(user.uid);
-              cancelEditingImage();
-              setLoadingMessage("");
-            } else {
-              setNotification({
-                type: "warning",
-                message:
-                  "Something may have gone wrong while updating your profile picture. It should fix itself, but if your new profile picture is not visiable after a few minutes, please try updating it again.",
-                open: true,
-              });
-              cancelEditingImage();
-              setLoadingMessage("");
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-            setNotification({
-              type: "warning",
-              message:
-                "Something may have gone wrong while updating your profile picture. It should fix itself, but if your new profile picture is not visiable after a few minutes, please try updating it again.",
-              open: true,
-            });
-            cancelEditingImage();
-            setLoadingMessage("");
+  const saveImageHelper = (
+    organization: OrganizationDataWithManagers,
+    newPhotoUrl: string
+  ) => {
+    updateOrganizationPhotoUrlDatabase(organization.organizationId, newPhotoUrl)
+      .then((value) => {
+        if (value) {
+          setNotification({
+            type: "success",
+            message: "Organization Profile Picture Updated Successfully!",
+            open: true,
           });
+          handleLoadOrganizationData();
+          cancelEditingImage();
+          setLoadingMessage("");
+        } else {
+          setNotification({
+            type: "warning",
+            message:
+              "Something may have gone wrong while updating your organization profile picture. It should fix itself, but if your new organization profile picture is not visiable after a few minutes, please try updating it again.",
+            open: true,
+          });
+          cancelEditingImage();
+          setLoadingMessage("");
+        }
       })
       .catch((err) => {
         console.log(err);
         setNotification({
-          type: "error",
-          message: `Unable to profile picture. ${
-            err.message ? err.message : "Please try again later."
-          }`,
+          type: "warning",
+          message:
+            "Something may have gone wrong while updating your organization profile picture. It should fix itself, but if your new organization profile picture is not visiable after a few minutes, please try updating it again.",
           open: true,
         });
         cancelEditingImage();
@@ -168,9 +155,15 @@ const ViewEditOrganizationPhoto: React.FunctionComponent<PageProps> = ({
     <Fragment>
       <SquareAvatar
         alt={
-          currentUserProfile?.displayName ? currentUserProfile.displayName : ""
+          currentOrganizationData?.organizationName
+            ? currentOrganizationData.organizationName
+            : ""
         }
-        src={currentUserProfile?.photoURL ? currentUserProfile.photoURL : ""}
+        src={
+          currentOrganizationData?.photoUrl
+            ? currentOrganizationData.photoUrl
+            : ""
+        }
         centerInContainer={true}
         maxHeightPercentageOfScreen={50}
         maxWidthPercentageOfParent={100}
@@ -184,7 +177,6 @@ const ViewEditOrganizationPhoto: React.FunctionComponent<PageProps> = ({
           startEditing();
         }}
         aria-label="edit-image"
-        id="profileTourStep11"
       >
         <EditIcon />
       </Fab>
@@ -197,13 +189,13 @@ const ViewEditOrganizationPhoto: React.FunctionComponent<PageProps> = ({
         aria-labelledby="image-upload-title"
       >
         <DialogTitle id="image-upload-title">
-          Upload a New Profile Picture
+          Upload a New Organization Profile Picture
         </DialogTitle>
         <DialogContent>
           <DialogContentText id="alert-dialog-description">
-            Upload a new Profile Picture using the button below. Please make
-            sure that your image file is less than 2 MB. For best results, a
-            square image where your face is in or near the center is
+            Upload a new Organization Profile Picture using the button below.
+            Please make sure that your image file is less than 2 MB. For best
+            results, a square image where your logo is in or near the center is
             recommended.
           </DialogContentText>
           <DropzoneArea

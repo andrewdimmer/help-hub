@@ -4,15 +4,7 @@ import DoneIcon from "@material-ui/icons/Done";
 import EditIcon from "@material-ui/icons/Edit";
 import React, { Fragment } from "react";
 import { updateOrganizationDescriptionDatabase } from "../../../Scripts/firebaseOrganizationUpdates";
-import { PageProps } from "../../Pages";
-
-declare interface ViewEditOrganizationInfoProps {
-  currentOrganizationData: any;
-  setNotification: any;
-  handleLoadOrganizationData: any;
-  setLoadingMessage: any;
-  classes: any;
-}
+import { ViewEditOrganizationInfoProps } from "../../Layouts/EditOrganization";
 
 const ViewEditOrganizationDescription: React.FunctionComponent<ViewEditOrganizationInfoProps> = ({
   currentOrganizationData,
@@ -61,7 +53,7 @@ const ViewEditOrganizationDescription: React.FunctionComponent<ViewEditOrganizat
               message: "Organization Description Updated Successfully!",
               open: true,
             });
-            handleLoadOrganizationData(currentOrganizationData.organizationId);
+            handleLoadOrganizationData();
             cancelEditing();
             setLoadingMessage("");
           } else {
