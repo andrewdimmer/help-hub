@@ -1,3 +1,5 @@
+import { UserPublicProfile } from "../Users/userTypes";
+
 export declare interface EventGroupData {
   eventGroupId: string;
   organizationId: string;
@@ -25,6 +27,14 @@ export declare interface EventData {
   zip: string;
   volunteersNeeded: number;
   categories: string[];
+}
+
+export declare interface EventDataWithCount extends EventData {
+  volunteerCount: number;
+}
+
+export declare interface EventDataWithVolunteers extends EventData {
+  volunteers: UserPublicProfile[];
 }
 
 export declare interface CreateNewEventGroupFunctionInput {

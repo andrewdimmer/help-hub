@@ -1,7 +1,6 @@
 import * as functions from "firebase-functions";
 import firebaseApp from "../firebaseConfig";
-import { EventData } from "./eventTypes";
-import { getEventsFromEventRefCollection } from "./getEventsFromEventIdEntry";
+import { getEventsFromEventRefCollection } from "./getEventsFromEventRefCollection";
 import { sortEventsByStartDate } from "./sortEventsByStartDate";
 
 // Start writing Firebase Functions
@@ -20,7 +19,7 @@ export const getEventsByUser = functions.https.onRequest(
         if (events !== null) {
           response.status(200).send(
             JSON.stringify({
-              events: sortEventsByStartDate(events as EventData[]),
+              events: sortEventsByStartDate(events),
             })
           );
         } else {
