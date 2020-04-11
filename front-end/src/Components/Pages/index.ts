@@ -12,6 +12,7 @@ import HomePage from "./HomePage";
 import LoginPage from "./LoginPage";
 import LogoutPage from "./LogoutPage";
 import ProfilePage from "./ProfilePage";
+import ManageOrganizations from "./ManageOrganizations";
 
 export declare interface PageProps {
   setPageKey: (pageKey: string) => void;
@@ -81,7 +82,7 @@ const pageList: PageListItem[] = [
     menuIcon: ExitToAppIcon,
     displaySignedIn: true,
     displaySignedOut: false,
-    component: CreateEvent,
+    component: ManageOrganizations,
   },
   {
     key: "logout",
