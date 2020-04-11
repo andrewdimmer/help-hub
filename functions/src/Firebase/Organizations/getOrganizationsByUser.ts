@@ -8,7 +8,7 @@ import { sortUsersByName } from "../Users/sortUsersByName";
 
 // Start writing Firebase Functions
 // https://firebase.google.com/docs/functions/typescript
-export const getEventsByUser = functions.https.onRequest(
+export const getOrganizationsByUser = functions.https.onRequest(
   (request, response) => {
     response.setHeader("Access-Control-Allow-Origin", "*");
     const userId = request.body;

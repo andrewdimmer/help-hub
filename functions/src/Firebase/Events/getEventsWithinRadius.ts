@@ -2,6 +2,7 @@ import * as functions from "firebase-functions";
 import { getZipCodesWithinRadius } from "../../ZipCodes/getZipCodesWithinRadius";
 import firebaseApp from "../firebaseConfig";
 import { getPublicProfilesFromUserRefCollection } from "../Users/getPublicProfilesFromUserRefCollection";
+import { sortUsersByName } from "../Users/sortUsersByName";
 import { removeEventMapInZipcode } from "./eventRefMappings";
 import { EventData, EventDataWithCount } from "./eventTypes";
 import { getEventsFromEventRefCollection } from "./getEventsFromEventRefCollection";
@@ -68,7 +69,9 @@ export const getEventsWithinRadius = functions.https.onRequest(
                       const eventVolunteers = eventsVolunteers[index];
                       return {
                         event: event,
-                        volunteers: eventVolunteers ? eventVolunteers : [],
+                        volunteers: eventVolunteers
+                          ? sortUsersByName(eventVolunteers)
+                          : [],
                       };
                     });
 
