@@ -45,3 +45,18 @@ export const createEventMapInOrganization = (
     .then(() => true)
     .catch(logAndReturnFalse);
 };
+
+export const createEventMapInEventGroup = (
+  eventGroupId: string,
+  eventId: string
+): Promise<boolean> => {
+  return firebaseApp
+    .firestore()
+    .collection("eventGroups")
+    .doc(eventGroupId)
+    .collection("events")
+    .doc(eventId)
+    .set({ eventId })
+    .then(() => true)
+    .catch(logAndReturnFalse);
+};

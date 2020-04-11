@@ -6,7 +6,6 @@ export declare interface EventGroupData {
   eventName: string;
   eventDescription: string;
   eventContactInfo: string;
-  events: string[]; // EventIds of the events
   categories: string[];
 }
 

@@ -10,6 +10,7 @@ import { allSuccessfulResponse } from "../../Helpers/allSuccessful";
 import {
   createEventMapInZipcode,
   createEventMapInOrganization,
+  createEventMapInEventGroup,
 } from "./eventRefMappings";
 
 // Start writing Firebase Functions
@@ -31,9 +32,6 @@ export const createNewEventGroup = functions.https.onRequest(
         eventName: createEventInputData.eventName,
         eventDescription: createEventInputData.eventDescription,
         eventContactInfo: createEventInputData.eventContactInfo,
-        events: createEventInputData.events.map(
-          (eventDetails) => eventDetails.eventId
-        ),
         categories: createEventInputData.categories,
       })
     );
@@ -72,6 +70,14 @@ export const createNewEventGroup = functions.https.onRequest(
 
       // Create Event Mapping in the Specified Zip Code's Upcoming Events
       promises.push(createEventMapInZipcode(event.zip, event.eventId));
+
+      // Create Event Mapping in the Event Group
+      promises.push(
+        createEventMapInEventGroup(
+          createEventInputData.eventGroupId,
+          event.eventId
+        )
+      );
     }
 
     allSuccessfulResponse(promises, response);
