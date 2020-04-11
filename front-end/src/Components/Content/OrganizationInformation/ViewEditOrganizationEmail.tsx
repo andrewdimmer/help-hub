@@ -21,9 +21,7 @@ const ViewEditOrganizationEmail: React.FunctionComponent<ViewEditOrganizationInf
   setLoadingMessage,
   classes,
 }) => {
-  const [organizationEmail, setOrganizationEmail] = React.useState<
-    string
-  >(
+  const [organizationEmail, setOrganizationEmail] = React.useState<string>(
     currentOrganizationData?.organizationEmail
       ? currentOrganizationData.organizationEmail
       : ""
@@ -51,17 +49,17 @@ const ViewEditOrganizationEmail: React.FunctionComponent<ViewEditOrganizationInf
     if (currentOrganizationData) {
       setLoadingMessage("Updating Organization Email...");
       updateOrganizationEmailDatabase(
-        currentOrganizationData.userId,
+        currentOrganizationData.organizationId,
         organizationEmail
       )
-        .then((value: any) => {
+        .then((value) => {
           if (value) {
             setNotification({
               type: "success",
               message: "Organization Email Updated Successfully!",
               open: true,
             });
-            handleLoadOrganizationData(currentOrganizationData.userId);
+            handleLoadOrganizationData(currentOrganizationData.organizationId);
             cancelEditing();
             setLoadingMessage("");
           } else {
@@ -75,7 +73,7 @@ const ViewEditOrganizationEmail: React.FunctionComponent<ViewEditOrganizationInf
             setLoadingMessage("");
           }
         })
-        .catch((err: any) => {
+        .catch((err) => {
           console.log(err);
           setNotification({
             type: "warning",

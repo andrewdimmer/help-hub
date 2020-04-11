@@ -65,7 +65,6 @@ const ManageOrganizations: React.FunctionComponent<PageProps> = ({
         return (
           <Organization
             setNotification={setNotification}
-            key={value.organizationId}
             setEventOrgId={setEventOrganizationId}
             setEditOrganizationData={setEditOrganizationData}
             organizationData={organizations[index]}

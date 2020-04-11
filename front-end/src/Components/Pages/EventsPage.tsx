@@ -82,7 +82,10 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
   };
 
   if (events === null) {
-    setTimeout(getEvents, 1);
+    setTimeout(() => {
+      setGettingEvents(true);
+      getUpcomingEvents(getUserEvents);
+    }, 1);
   }
 
   return (

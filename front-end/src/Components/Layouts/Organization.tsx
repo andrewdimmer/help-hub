@@ -19,33 +19,27 @@ import EventIcon from "@material-ui/icons/Event";
 import DeleteIcon from "@material-ui/icons/Delete";
 interface EventInfoProps {
   organizationData: any;
-  key: string;
   setEventOrgId: Function;
   setEditOrganizationData: Function;
   setNotification: (notification: NotificationMessage) => void;
   classes: any;
 }
 
-const useStyles = makeStyles({
-  spaceLeft: {
-    marginLeft: "10px",
-  },
-});
-
 const Organization: React.FunctionComponent<EventInfoProps> = ({
   setNotification,
-  key,
   setEditOrganizationData,
   setEventOrgId,
   organizationData,
   classes,
 }) => {
-  const style = useStyles();
   return (
     <div className="App">
       <Container>
         <Paper className={classes.marginedPadded}>
-          <ListItem alignItems="flex-start" key={key}>
+          <ListItem
+            alignItems="flex-start"
+            key={organizationData.organizationId}
+          >
             <ListItemAvatar>
               <Avatar
                 alt={organizationData.organizationName}

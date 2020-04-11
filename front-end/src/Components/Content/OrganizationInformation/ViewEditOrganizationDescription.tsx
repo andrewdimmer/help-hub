@@ -51,17 +51,17 @@ const ViewEditOrganizationDescription: React.FunctionComponent<ViewEditOrganizat
     if (currentOrganizationData) {
       setLoadingMessage("Updating Organization Description...");
       updateOrganizationDescriptionDatabase(
-        currentOrganizationData.userId,
+        currentOrganizationData.organizationId,
         organizationDescription
       )
-        .then((value: any) => {
+        .then((value) => {
           if (value) {
             setNotification({
               type: "success",
               message: "Organization Description Updated Successfully!",
               open: true,
             });
-            handleLoadOrganizationData(currentOrganizationData.userId);
+            handleLoadOrganizationData(currentOrganizationData.organizationId);
             cancelEditing();
             setLoadingMessage("");
           } else {
@@ -75,7 +75,7 @@ const ViewEditOrganizationDescription: React.FunctionComponent<ViewEditOrganizat
             setLoadingMessage("");
           }
         })
-        .catch((err: any) => {
+        .catch((err) => {
           console.log(err);
           setNotification({
             type: "warning",

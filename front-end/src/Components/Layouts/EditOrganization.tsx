@@ -36,7 +36,7 @@ interface EventInfoProps {
   classes: any;
 }
 
-const Organization: React.FunctionComponent<EventInfoProps> = ({
+const EditOrganization: React.FunctionComponent<EventInfoProps> = ({
   setNotification,
   currentOrganizationData,
   setCurrentOrganizationData,
@@ -71,13 +71,11 @@ const Organization: React.FunctionComponent<EventInfoProps> = ({
           </Toolbar>
         </AppBar>
         <Container className={classes.pageTitle}>
-          <Typography variant="h3" id="profileTourStep1">
-            Profile
-          </Typography>
+          <Typography variant="h3">Organization Information</Typography>
         </Container>
         <Container>
           <Grid container spacing={6}>
-            <Grid item xs={12} sm={12} md={4} lg={3} id="profileTourStep10">
+            <Grid item xs={12} sm={12} md={4} lg={3}>
               {/* <ViewEditOrganizationPhoto
             currentOrganizationData={currentOrganizationData}
             currentUserProfile={currentUserProfile}
@@ -126,4 +124,4 @@ const Organization: React.FunctionComponent<EventInfoProps> = ({
   );
 };
 
-export default Organization;
+export default EditOrganization;

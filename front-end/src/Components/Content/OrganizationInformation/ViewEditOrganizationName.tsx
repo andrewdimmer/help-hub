@@ -49,17 +49,17 @@ const ViewEditOrganizationName: React.FunctionComponent<ViewEditOrganizationInfo
     if (currentOrganizationData) {
       setLoadingMessage("Updating Organization Name...");
       updateOrganizationNameDatabase(
-        currentOrganizationData.userId,
+        currentOrganizationData.organizationId,
         organizationName
       )
-        .then((value: any) => {
+        .then((value) => {
           if (value) {
             setNotification({
               type: "success",
               message: "Organization Name Updated Successfully!",
               open: true,
             });
-            handleLoadOrganizationData(currentOrganizationData.userId);
+            handleLoadOrganizationData(currentOrganizationData.organizationId);
             cancelEditing();
             setLoadingMessage("");
           } else {
@@ -73,7 +73,7 @@ const ViewEditOrganizationName: React.FunctionComponent<ViewEditOrganizationInfo
             setLoadingMessage("");
           }
         })
-        .catch((err: any) => {
+        .catch((err) => {
           console.log(err);
           setNotification({
             type: "warning",

@@ -21,9 +21,7 @@ const ViewEditOrganizationPhone: React.FunctionComponent<ViewEditOrganizationInf
   setLoadingMessage,
   classes,
 }) => {
-  const [organizationPhone, setOrganizationPhone] = React.useState<
-    string
-  >(
+  const [organizationPhone, setOrganizationPhone] = React.useState<string>(
     currentOrganizationData?.organizationPhone
       ? currentOrganizationData.organizationPhone
       : ""
@@ -51,17 +49,17 @@ const ViewEditOrganizationPhone: React.FunctionComponent<ViewEditOrganizationInf
     if (currentOrganizationData) {
       setLoadingMessage("Updating Organization Phone...");
       updateOrganizationPhoneDatabase(
-        currentOrganizationData.userId,
+        currentOrganizationData.organizationId,
         organizationPhone
       )
-        .then((value: any) => {
+        .then((value) => {
           if (value) {
             setNotification({
               type: "success",
               message: "Organization Phone Updated Successfully!",
               open: true,
             });
-            handleLoadOrganizationData(currentOrganizationData.userId);
+            handleLoadOrganizationData(currentOrganizationData.organizationId);
             cancelEditing();
             setLoadingMessage("");
           } else {
@@ -75,7 +73,7 @@ const ViewEditOrganizationPhone: React.FunctionComponent<ViewEditOrganizationInf
             setLoadingMessage("");
           }
         })
-        .catch((err: any) => {
+        .catch((err) => {
           console.log(err);
           setNotification({
             type: "warning",
