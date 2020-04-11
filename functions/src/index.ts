@@ -21,6 +21,13 @@ import {
   testGetZipCodesWithinRadius50,
   testZipcodeFunctions,
 } from "./ZipCodes/testGetZipCodesWithinRadius";
+import {
+  updateOrganizationName,
+  updateOrganizationDescription,
+  updateOrganizationEmail,
+  updateOrganizationPhone,
+  updateOrganizationPhotoUrl,
+} from "./Firebase/Organizations/updateOrganizationInformation";
 
 // Start writing Firebase Functions
 // https://firebase.google.com/docs/functions/typescript
@@ -56,6 +63,13 @@ export const unregister_for_event = unregisterForEvent;
 
 // Create New Organization
 export const create_new_organization = createNewOrganization;
+
+// Update Organization Information
+export const update_organization_name = updateOrganizationName;
+export const update_organization_description = updateOrganizationDescription;
+export const update_organization_email = updateOrganizationEmail;
+export const update_organization_phone = updateOrganizationPhone;
+export const update_organization_photo_url = updateOrganizationPhotoUrl;
 
 // Unit Tests and Validation
 export const test_information_mappings = testInformationMappings;
