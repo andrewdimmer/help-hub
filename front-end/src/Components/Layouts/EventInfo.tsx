@@ -1,10 +1,14 @@
 import { Button, Card, Container, Grid, Typography } from "@material-ui/core";
 import React from "react";
-import { EventData } from "../../Scripts/firebaseEventTypes";
+import {
+  EventData,
+  EventDataWithCount,
+  EventDataWithVolunteers,
+} from "../../Scripts/firebaseEventTypes";
 
 interface EventInfoProps {
   classes: any;
-  eventData: EventData;
+  eventData: EventData | EventDataWithCount | EventDataWithVolunteers;
   registrationFunction?: (eventId: string) => void;
   unregistrationFunction?: (eventId: string) => void;
 }
@@ -15,6 +19,21 @@ const EventInfo: React.FunctionComponent<EventInfoProps> = ({
   registrationFunction,
   unregistrationFunction,
 }) => {
+  const volunteerCount =
+    "volunteerCount" in eventData ? eventData.volunteerCount : undefined;
+  const volunteersStillNeeded =
+    volunteerCount !== undefined
+      ? eventData.volunteersNeeded - volunteerCount
+      : 0;
+  const volunteerCountString =
+    volunteerCount !== undefined
+      ? `(${volunteersStillNeeded} volunteer${
+          volunteersStillNeeded !== 1 ? "s" : ""
+        } still needed)`
+      : "";
+  const volunteers =
+    "volunteers" in eventData ? eventData.volunteers : undefined;
+
   return (
     <Container className={classes.margined}>
       <Card
@@ -28,7 +47,7 @@ const EventInfo: React.FunctionComponent<EventInfoProps> = ({
             sm={registrationFunction || unregistrationFunction ? 10 : 12}
             xs={12}
           >
-            <Typography variant="h5">{eventData.eventName}</Typography>
+            <Typography variant="h5">{`${eventData.eventName} ${volunteerCountString}`}</Typography>
             <Typography variant="h6" noWrap={true}>
               Description: {eventData.eventDescription}
             </Typography>

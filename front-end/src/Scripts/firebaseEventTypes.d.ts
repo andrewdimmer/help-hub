@@ -27,6 +27,14 @@ export declare interface EventData {
   categories: string[];
 }
 
+export declare interface EventDataWithCount extends EventData {
+  volunteerCount: number;
+}
+
+export declare interface EventDataWithVolunteers extends EventData {
+  volunteers: UserProfilePublic;
+}
+
 export declare interface CreateNewEventGroupFunctionInput {
   eventGroupId: string;
   organizationId: string;

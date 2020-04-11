@@ -1,10 +1,10 @@
 import ky from "ky";
-import { EventData } from "./firebaseEventTypes";
+import { EventData, EventDataWithCount } from "./firebaseEventTypes";
 
 export const getEventsWithinRadius = (
   zipcode: string,
   radius: number
-): Promise<EventData[] | null> => {
+): Promise<EventDataWithCount[] | null> => {
   return ky
     .post(
       "https://us-central1-cathacksvi-gcp.cloudfunctions.net/get_events_within_radius",

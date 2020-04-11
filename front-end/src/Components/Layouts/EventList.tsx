@@ -1,10 +1,14 @@
 import { Container, Typography } from "@material-ui/core";
 import React, { Fragment } from "react";
-import { EventData } from "../../Scripts/firebaseEventTypes";
+import {
+  EventData,
+  EventDataWithCount,
+  EventDataWithVolunteers,
+} from "../../Scripts/firebaseEventTypes";
 import EventInfo from "./EventInfo";
 
 declare interface EventListProps {
-  events: EventData[];
+  events: (EventData | EventDataWithCount | EventDataWithVolunteers)[];
   classes: any;
   registrationFunction?: (eventId: string) => void;
   unregistrationFunction?: (eventId: string) => void;

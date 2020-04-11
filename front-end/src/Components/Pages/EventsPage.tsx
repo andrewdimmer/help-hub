@@ -17,7 +17,10 @@ import {
   registerForEvent,
   unregisterForEvent,
 } from "../../Scripts/firebaseEventRegistration";
-import { EventData } from "../../Scripts/firebaseEventTypes";
+import {
+  EventData,
+  EventDataWithCount,
+} from "../../Scripts/firebaseEventTypes";
 import {
   getEventsByUser,
   getEventsWithinRadius,
@@ -39,8 +42,10 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
     currentUserProfile?.zipcode ? currentUserProfile.zipcode : ""
   );
   const [priorZip, setPriorZip] = React.useState<string>("zip");
-  const [events, setEvents] = React.useState<EventData[] | null>(null);
-  const [visibleEvents, setVisibleEvents] = React.useState<EventData[]>([]);
+  const [events, setEvents] = React.useState<EventDataWithCount[] | null>(null);
+  const [visibleEvents, setVisibleEvents] = React.useState<
+    EventDataWithCount[]
+  >([]);
   const [myFutureEvents, setMyFutureEvents] = React.useState<EventData[]>([]);
   const [myPastEvents, setMyPastEvents] = React.useState<EventData[]>([]);
   const [gettingEvents, setGettingEvents] = React.useState<boolean>(false);
@@ -193,8 +198,8 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
     }
   };
 
-  const filterByCategory = (events: EventData[]) => {
-    const newVisibleEvents: EventData[] = [];
+  const filterByCategory = (events: EventDataWithCount[]) => {
+    const newVisibleEvents: EventDataWithCount[] = [];
     for (const event of events) {
       for (const category of selectedCategories) {
         if (category === "Uncategorized") {
