@@ -1,16 +1,30 @@
-import { Button, Card, Container, Grid, Typography } from "@material-ui/core";
-import React from "react";
+import {
+  Button,
+  Card,
+  Container,
+  Grid,
+  Typography,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Box,
+  Fab,
+} from "@material-ui/core";
+import React, { Fragment } from "react";
 import {
   EventData,
   EventDataWithCount,
   EventDataWithVolunteers,
 } from "../../Scripts/firebaseEventTypes";
+import SquareAvatar from "../Misc/SquareAvatar";
+import EditIcon from '@material-ui/icons/Edit';
 
 interface EventInfoProps {
   classes: any;
   eventData: EventData | EventDataWithCount | EventDataWithVolunteers;
   registrationFunction?: (eventId: string) => void;
   unregistrationFunction?: (eventId: string) => void;
+  editFunction?: Function;
 }
 
 const EventInfo: React.FunctionComponent<EventInfoProps> = ({
@@ -18,6 +32,7 @@ const EventInfo: React.FunctionComponent<EventInfoProps> = ({
   eventData,
   registrationFunction,
   unregistrationFunction,
+  editFunction,
 }) => {
   const volunteerCount =
     "volunteerCount" in eventData ? eventData.volunteerCount : undefined;
@@ -66,6 +81,53 @@ const EventInfo: React.FunctionComponent<EventInfoProps> = ({
             <Typography variant="body1">
               <em>{`${eventData.address}, ${eventData.city}, ${eventData.state} ${eventData.zip}`}</em>
             </Typography>
+            {volunteers != undefined &&
+              volunteers.map((value: any, index: number) => {
+                return (
+                  <ListItem alignItems="flex-start" key={value.userId}>
+                    <ListItemAvatar>
+                      <Box height="50px" width="50px">
+                        <SquareAvatar
+                          alt={value.displayName}
+                          src={value.photoUrl}
+                          maxHeightPercentageOfScreen={100}
+                          maxWidthPercentageOfParent={100}
+                          maxWidthPercentageOfScreen={100}
+                          centerInContainer={true}
+                        />
+                      </Box>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={
+                        <Fragment>
+                          <Typography variant="h5">
+                            {value.displayName}
+                          </Typography>
+                        </Fragment>
+                      }
+                      secondary={
+                        <Fragment>
+                          <Typography
+                            component="span"
+                            variant="subtitle1"
+                            color="textPrimary"
+                          >
+                            <em>Phone: {value.phoneNumber}</em>
+                          </Typography>
+                          <br />
+                          <Typography
+                            component="span"
+                            variant="subtitle1"
+                            color="textPrimary"
+                          >
+                            <em>Email: {value.email}</em>
+                          </Typography>
+                        </Fragment>
+                      }
+                    />
+                  </ListItem>
+                );
+              })}
           </Grid>
           {(registrationFunction || unregistrationFunction) && (
             <Grid item sm={2} xs={12}>
@@ -88,6 +150,15 @@ const EventInfo: React.FunctionComponent<EventInfoProps> = ({
                   ? "Register to Volunteer"
                   : "Unregister from Volunteering"}
               </Button>
+            </Grid>
+          )}
+          {(editFunction) && (
+            <Grid item sm={2} xs={12}>
+              <Fab
+                color="primary"
+                onClick={()=>{console.log("Edit");}}
+              >
+              <EditIcon></EditIcon></Fab>
             </Grid>
           )}
         </Grid>

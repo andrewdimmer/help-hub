@@ -80,6 +80,7 @@ const ManageOrganizations: React.FunctionComponent<PageProps> = ({
         handleLoadOrganizationData={handleLoadOrganizationData}
         classes={classes}
       ></EditOrganization>
+      {/* <OrganizationEvents></OrganizationEvents> */}
     </Fragment>
   );
 };

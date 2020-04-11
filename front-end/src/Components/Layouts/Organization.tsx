@@ -47,20 +47,22 @@ const Organization: React.FunctionComponent<EventInfoProps> = ({
               />
             </ListItemAvatar>
             <ListItemText
-              primary={organizationData.organizationName}
+              primary={
+                <Fragment>
+                  <Typography variant="h5">
+                    {organizationData.organizationName}
+                  </Typography>
+                </Fragment>
+              }
               secondary={
                 <Fragment>
-                  <Typography
-                    component="span"
-                    variant="subtitle1"
-                    color="textPrimary"
-                  >
+                  <Typography component="span" variant="h6" color="textPrimary">
                     {organizationData.organizationDescription}
                   </Typography>
                   <br />
                   <Typography
                     component="span"
-                    variant="subtitle2"
+                    variant="subtitle1"
                     color="textPrimary"
                   >
                     <em>Phone: {organizationData.organizationPhone}</em>
@@ -68,7 +70,7 @@ const Organization: React.FunctionComponent<EventInfoProps> = ({
                   <br />
                   <Typography
                     component="span"
-                    variant="subtitle2"
+                    variant="subtitle1"
                     color="textPrimary"
                   >
                     <em>Email: {organizationData.organizationEmail}</em>
