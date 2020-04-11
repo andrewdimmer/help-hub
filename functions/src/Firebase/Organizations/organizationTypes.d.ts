@@ -9,6 +9,6 @@ export declare interface OrganizationData {
   photoUrl: string;
 }
 
-export declare interface OrganizationDataWithUsers extends OrganizationData {
-  users: UserPublicProfile[];
+export declare interface OrganizationDataWithManagers extends OrganizationData {
+  managers: UserPublicProfile[];
 }

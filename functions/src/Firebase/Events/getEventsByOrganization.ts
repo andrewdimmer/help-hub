@@ -1,6 +1,7 @@
 import * as functions from "firebase-functions";
 import firebaseApp from "../firebaseConfig";
 import { getPublicProfilesFromUserRefCollection } from "../Users/getPublicProfilesFromUserRefCollection";
+import { sortUsersByName } from "../Users/sortUsersByName";
 import { EventDataWithVolunteers } from "./eventTypes";
 import { getEventsFromEventGrouopRefCollection } from "./getEventsFromEventGroupRefCollection";
 import { sortEventsByStartDate } from "./sortEventsByStartDate";
@@ -39,7 +40,9 @@ export const getEventsByOrganization = functions.https.onRequest(
                   const eventVolunteers = eventsVolunteers[index];
                   return {
                     ...event,
-                    volunteers: eventVolunteers ? eventVolunteers : [],
+                    volunteers: eventVolunteers
+                      ? sortUsersByName(eventVolunteers)
+                      : [],
                   };
                 }
               );

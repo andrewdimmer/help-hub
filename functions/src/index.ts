@@ -6,6 +6,14 @@ import { getEventsWithinRadius } from "./Firebase/Events/getEventsWithinRadius";
 import { registerForEvent } from "./Firebase/Events/registerForEvent";
 import { unregisterForEvent } from "./Firebase/Events/unregisterForEvent";
 import { createNewOrganization } from "./Firebase/Organizations/createNewOrganization";
+import { getOrganizationsByUser } from "./Firebase/Organizations/getOrganizationsByUser";
+import {
+  updateOrganizationDescription,
+  updateOrganizationEmail,
+  updateOrganizationName,
+  updateOrganizationPhone,
+  updateOrganizationPhotoUrl,
+} from "./Firebase/Organizations/updateOrganizationInformation";
 import { createNewUserDatabaseObjects } from "./Firebase/Users/createNewUser";
 import { getUserProfileDatabaseObject } from "./Firebase/Users/getUserProfile";
 import { testInformationMappings } from "./Firebase/Users/testInformationMappings";
@@ -21,13 +29,6 @@ import {
   testGetZipCodesWithinRadius50,
   testZipcodeFunctions,
 } from "./ZipCodes/testGetZipCodesWithinRadius";
-import {
-  updateOrganizationName,
-  updateOrganizationDescription,
-  updateOrganizationEmail,
-  updateOrganizationPhone,
-  updateOrganizationPhotoUrl,
-} from "./Firebase/Organizations/updateOrganizationInformation";
 
 // Start writing Firebase Functions
 // https://firebase.google.com/docs/functions/typescript
@@ -63,6 +64,9 @@ export const unregister_for_event = unregisterForEvent;
 
 // Create New Organization
 export const create_new_organization = createNewOrganization;
+
+// Get Organizations
+export const get_organizations_by_user = getOrganizationsByUser;
 
 // Update Organization Information
 export const update_organization_name = updateOrganizationName;

@@ -1,6 +1,5 @@
 import * as functions from "firebase-functions";
 import firebaseApp from "../firebaseConfig";
-import { getOrganizationProfile } from "../Organizations/getOrganizationProfile";
 
 // Start writing Firebase Functions
 // https://firebase.google.com/docs/functions/typescript
@@ -39,44 +38,6 @@ export const getUserProfileDatabaseObject = functions.https.onRequest(
       .catch((err) => {
         console.log(err);
         response.status(500).send(null);
-      });
-    console.log(promise);
-  }
-);
-
-// Start writing Firebase Functions
-// https://firebase.google.com/docs/functions/typescript
-export const getUserOrganizations = functions.https.onRequest(
-  (request, response) => {
-    response.setHeader("Access-Control-Allow-Origin", "*");
-    const promise = firebaseApp
-      .firestore()
-      .collection("users")
-      .doc(request.body)
-      .collection("organizations")
-      .get()
-      .then((organizationSnapshot) => {
-        const organizations = [];
-        for (const organization of organizationSnapshot.docs) {
-          const organizationData = organization.data();
-          if (organization.data) {
-            organizations.push(
-              getOrganizationProfile(organizationData.organizationId)
-            );
-          }
-        }
-        const promises = Promise.all(organizations).then((results) => {
-          const resultsData = [];
-          for (const result of results) {
-            if (result) {
-              resultsData.push(result);
-            }
-          }
-          response
-            .status(200)
-            .send(JSON.stringify({ organizations: resultsData }));
-        });
-        console.log(promises);
       });
     console.log(promise);
   }
