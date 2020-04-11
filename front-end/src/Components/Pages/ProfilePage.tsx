@@ -8,11 +8,12 @@ import ViewEditUserPhone from "../Content/ProfileInformation/ViewEditUserPhone";
 import ViewEditUserPhoto from "../Content/ProfileInformation/ViewEditUserPhoto";
 import ViewEditUserZipcode from "../Content/ProfileInformation/ViewEditUserZipcode";
 import ViewEditUserInterests from "../Content/ProfileInformation/ViewEditUserInterests";
+import ViewEditUserGoogleCalendarAuth from "../Content/ProfileInformation/ViewEditUserGoogleCalendarAuth";
 
 const ProfilePage: React.FunctionComponent<PageProps> = ({
   currentUser,
   currentUserProfile,
-  setPageKey,
+  handleChangePageKey,
   setNotification,
   setLoadingMessage,
   forceReloadUserData,
@@ -33,7 +34,7 @@ const ProfilePage: React.FunctionComponent<PageProps> = ({
             currentUserProfile={currentUserProfile}
             forceReloadUserData={forceReloadUserData}
             handleLoadUserData={handleLoadUserData}
-            setPageKey={setPageKey}
+            handleChangePageKey={handleChangePageKey}
             setLoadingMessage={setLoadingMessage}
             setNotification={setNotification}
             classes={classes}
@@ -45,7 +46,7 @@ const ProfilePage: React.FunctionComponent<PageProps> = ({
             currentUserProfile={currentUserProfile}
             forceReloadUserData={forceReloadUserData}
             handleLoadUserData={handleLoadUserData}
-            setPageKey={setPageKey}
+            handleChangePageKey={handleChangePageKey}
             setLoadingMessage={setLoadingMessage}
             setNotification={setNotification}
             classes={classes}
@@ -55,7 +56,7 @@ const ProfilePage: React.FunctionComponent<PageProps> = ({
             currentUserProfile={currentUserProfile}
             forceReloadUserData={forceReloadUserData}
             handleLoadUserData={handleLoadUserData}
-            setPageKey={setPageKey}
+            handleChangePageKey={handleChangePageKey}
             setLoadingMessage={setLoadingMessage}
             setNotification={setNotification}
             classes={classes}
@@ -65,7 +66,7 @@ const ProfilePage: React.FunctionComponent<PageProps> = ({
             currentUserProfile={currentUserProfile}
             forceReloadUserData={forceReloadUserData}
             handleLoadUserData={handleLoadUserData}
-            setPageKey={setPageKey}
+            handleChangePageKey={handleChangePageKey}
             setLoadingMessage={setLoadingMessage}
             setNotification={setNotification}
             classes={classes}
@@ -75,7 +76,7 @@ const ProfilePage: React.FunctionComponent<PageProps> = ({
             currentUserProfile={currentUserProfile}
             forceReloadUserData={forceReloadUserData}
             handleLoadUserData={handleLoadUserData}
-            setPageKey={setPageKey}
+            handleChangePageKey={handleChangePageKey}
             setLoadingMessage={setLoadingMessage}
             setNotification={setNotification}
             classes={classes}
@@ -85,7 +86,7 @@ const ProfilePage: React.FunctionComponent<PageProps> = ({
             currentUserProfile={currentUserProfile}
             forceReloadUserData={forceReloadUserData}
             handleLoadUserData={handleLoadUserData}
-            setPageKey={setPageKey}
+            handleChangePageKey={handleChangePageKey}
             setLoadingMessage={setLoadingMessage}
             setNotification={setNotification}
             classes={classes}
@@ -95,7 +96,17 @@ const ProfilePage: React.FunctionComponent<PageProps> = ({
             currentUserProfile={currentUserProfile}
             forceReloadUserData={forceReloadUserData}
             handleLoadUserData={handleLoadUserData}
-            setPageKey={setPageKey}
+            handleChangePageKey={handleChangePageKey}
+            setLoadingMessage={setLoadingMessage}
+            setNotification={setNotification}
+            classes={classes}
+          />
+          <ViewEditUserGoogleCalendarAuth
+            currentUser={currentUser}
+            currentUserProfile={currentUserProfile}
+            forceReloadUserData={forceReloadUserData}
+            handleLoadUserData={handleLoadUserData}
+            handleChangePageKey={handleChangePageKey}
             setLoadingMessage={setLoadingMessage}
             setNotification={setNotification}
             classes={classes}

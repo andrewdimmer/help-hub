@@ -6,7 +6,7 @@ import { createNewUserDatabaseObjects } from "../../Scripts/firebaseCreateNewUse
 
 const LoginPage: React.FunctionComponent<PageProps> = ({
   setNotification,
-  setPageKey,
+  handleChangePageKey,
   setLoadingMessage,
   forceReloadUserData,
   handleLoadUserData,
@@ -25,10 +25,11 @@ const LoginPage: React.FunctionComponent<PageProps> = ({
         photoUrl: user.photoURL ? user.photoURL : "",
         zipcode: "",
         interests: [],
+        googleCalendarAuthorized: false,
       })
         .then((value) => {
           if (value) {
-            setPageKey("profile");
+            handleChangePageKey("profile");
             setNotification({
               type: "info",
               message:
@@ -45,7 +46,7 @@ const LoginPage: React.FunctionComponent<PageProps> = ({
                 "Unable to finish creating your account. Please try again later.",
               open: true,
             });
-            setPageKey("logout");
+            handleChangePageKey("logout");
             setLoadingMessage("");
           }
         })
@@ -57,7 +58,7 @@ const LoginPage: React.FunctionComponent<PageProps> = ({
               "Unable to finish creating your account. Please try again later.",
             open: true,
           });
-          setPageKey("logout");
+          handleChangePageKey("logout");
           setLoadingMessage("");
         });
     } else {
@@ -73,7 +74,7 @@ const LoginPage: React.FunctionComponent<PageProps> = ({
   const existingUserCallback = (authResult: firebase.auth.UserCredential) => {
     handleLoadUserData(authResult.user?.uid ? authResult.user.uid : "");
     forceReloadUserData();
-    setPageKey("home");
+    handleChangePageKey("home");
     setNotification({
       type: "success",
       message: "Successfully Signed In",

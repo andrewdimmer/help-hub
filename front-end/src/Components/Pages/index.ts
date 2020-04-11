@@ -11,10 +11,11 @@ import HomePage from "./HomePage";
 import LoginPage from "./LoginPage";
 import LogoutPage from "./LogoutPage";
 import ManageOrganizations from "./ManageOrganizations";
+import PrivacyPage from "./PrivacyPage";
 import ProfilePage from "./ProfilePage";
 
 export declare interface PageProps {
-  setPageKey: (pageKey: string) => void;
+  handleChangePageKey: (pageKey: string) => void;
   setLoadingMessage: (loadingMessage: string) => void;
   setNotification: (notification: NotificationMessage) => void;
   forceReloadUserData: () => void;
@@ -91,6 +92,15 @@ const pageList: PageListItem[] = [
     displaySignedIn: true,
     displaySignedOut: false,
     component: LogoutPage,
+  },
+  {
+    key: "privacy",
+    title: "Privacy Policy",
+    menuLabel: "Privacy Policy",
+    menuIcon: ExitToAppIcon,
+    displaySignedIn: false,
+    displaySignedOut: false,
+    component: PrivacyPage,
   },
 ];
 

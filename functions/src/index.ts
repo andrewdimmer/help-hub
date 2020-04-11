@@ -26,6 +26,10 @@ import {
   updateZipcodeDatabase,
 } from "./Firebase/Users/updateUserProfileDatabase";
 import {
+  getGoogleCalendarAuthURL,
+  getGoogleCalendarToken,
+} from "./GoogleCalendar/authHandlers";
+import {
   testGetZipCodesWithinRadius50,
   testZipcodeFunctions,
 } from "./ZipCodes/testGetZipCodesWithinRadius";
@@ -74,6 +78,10 @@ export const update_organization_description = updateOrganizationDescription;
 export const update_organization_email = updateOrganizationEmail;
 export const update_organization_phone = updateOrganizationPhone;
 export const update_organization_photo_url = updateOrganizationPhotoUrl;
+
+// Google Calendar Authorization
+export const get_google_calendar_auth_url = getGoogleCalendarAuthURL;
+export const get_google_calendar_token = getGoogleCalendarToken;
 
 // Unit Tests and Validation
 export const test_information_mappings = testInformationMappings;

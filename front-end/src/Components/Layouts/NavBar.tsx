@@ -34,7 +34,7 @@ declare interface NavBarProps {
   theme: "light" | "dark";
   toggleTheme: () => void;
   currentUserProfile: UserProfile | null;
-  setPageKey: (pageKey: string) => void;
+  handleChangePageKey: (pageKey: string) => void;
   pageTitle: string;
 }
 
@@ -42,7 +42,7 @@ const NavBar: React.FunctionComponent<NavBarProps> = ({
   theme,
   toggleTheme,
   currentUserProfile,
-  setPageKey,
+  handleChangePageKey,
   pageTitle,
 }) => {
   const classes = useStyles();
@@ -124,7 +124,7 @@ const NavBar: React.FunctionComponent<NavBarProps> = ({
                 <MenuItem
                   onClick={() => {
                     handleClose();
-                    setPageKey("login");
+                    handleChangePageKey("login");
                   }}
                 >
                   Join or Login
@@ -134,7 +134,7 @@ const NavBar: React.FunctionComponent<NavBarProps> = ({
                 <MenuItem
                   onClick={() => {
                     handleClose();
-                    setPageKey("events");
+                    handleChangePageKey("events");
                   }}
                 >
                   Volunteer
@@ -144,7 +144,7 @@ const NavBar: React.FunctionComponent<NavBarProps> = ({
                 <MenuItem
                   onClick={() => {
                     handleClose();
-                    setPageKey("organizations");
+                    handleChangePageKey("organizations");
                   }}
                 >
                   Manage Organizations
@@ -154,7 +154,7 @@ const NavBar: React.FunctionComponent<NavBarProps> = ({
                 <MenuItem
                   onClick={() => {
                     handleClose();
-                    setPageKey("profile");
+                    handleChangePageKey("profile");
                   }}
                 >
                   Profile
@@ -164,7 +164,7 @@ const NavBar: React.FunctionComponent<NavBarProps> = ({
                 <MenuItem
                   onClick={() => {
                     handleClose();
-                    setPageKey("logout");
+                    handleChangePageKey("logout");
                   }}
                 >
                   Logout

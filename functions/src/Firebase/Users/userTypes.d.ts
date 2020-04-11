@@ -9,4 +9,5 @@ export declare interface UserPublicProfile {
 export declare interface UserProfile extends UserPublicProfile {
   zipcode: string;
   interests: string[];
+  googleCalendarAuthorized: boolean;
 }

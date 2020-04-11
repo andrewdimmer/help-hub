@@ -5,7 +5,7 @@ import { PageProps } from ".";
 
 const HomePage: React.FunctionComponent<PageProps> = ({
   currentUser,
-  setPageKey,
+  handleChangePageKey,
 }) => {
   const classes = styles();
 
@@ -22,7 +22,7 @@ const HomePage: React.FunctionComponent<PageProps> = ({
         className={classes.margined}
         disabled={currentUser ? true : false}
         onClick={() => {
-          setPageKey("login");
+          handleChangePageKey("login");
         }}
       >
         <Typography variant="h4">
@@ -37,7 +37,7 @@ const HomePage: React.FunctionComponent<PageProps> = ({
         className={classes.margined}
         disabled={currentUser ? false : true}
         onClick={() => {
-          setPageKey("events");
+          handleChangePageKey("events");
         }}
       >
         <Typography variant="h4">
@@ -54,7 +54,7 @@ const HomePage: React.FunctionComponent<PageProps> = ({
         className={classes.margined}
         disabled={currentUser ? false : true}
         onClick={() => {
-          setPageKey("organizations");
+          handleChangePageKey("organizations");
         }}
       >
         <Typography variant="h4">

@@ -5,19 +5,19 @@ import { firebaseApp } from "../../Scripts/firebaseConfig";
 
 const LogoutPage: React.FunctionComponent<PageProps> = ({
   setNotification,
-  setPageKey,
+  handleChangePageKey,
   handleLoadUserData,
   forceReloadUserData,
-  classes
+  classes,
 }) => {
   const handleLogout = () => {
     firebaseApp.auth().signOut();
     setNotification({
       type: "success",
       message: "Successfully Signed Out",
-      open: true
+      open: true,
     });
-    setPageKey("home");
+    handleChangePageKey("home");
     handleLoadUserData("");
     forceReloadUserData();
   };

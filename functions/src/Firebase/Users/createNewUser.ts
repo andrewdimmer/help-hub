@@ -17,6 +17,7 @@ export const createNewUserDatabaseObjects = functions.https.onRequest(
       photoUrl,
       zipcode,
       interests,
+      googleCalendarAuthorized,
     } = JSON.parse(request.body) as {
       userId: string;
       displayName: string;
@@ -25,6 +26,7 @@ export const createNewUserDatabaseObjects = functions.https.onRequest(
       photoUrl: string;
       zipcode: string;
       interests: string[];
+      googleCalendarAuthorized: boolean;
     };
 
     const promises = [];
@@ -37,7 +39,8 @@ export const createNewUserDatabaseObjects = functions.https.onRequest(
         phone,
         photoUrl,
         zipcode,
-        interests
+        interests,
+        googleCalendarAuthorized
       )
     );
 
@@ -58,8 +61,9 @@ export const createNewUserDatabaseObjects = functions.https.onRequest(
  * @param email The email address of the new user.
  * @param phone The phone number of the new user.
  * @param photoUrl The profile picture photoUrl of the new user.
- * @param zipcode The zip code of the user
- * @param interests An array of interests of the user
+ * @param zipcode The zip code of the user.
+ * @param interests An array of interests of the user.
+ * @param googleCalendarAuthorized A boolean indicating whether of not a calendar has been authorized.
  * @returns true if the new user was created in the database without any errors; false otherwise.
  */
 const createNewUserUserObject = (
@@ -69,13 +73,23 @@ const createNewUserUserObject = (
   phone: string,
   photoUrl: string,
   zipcode: string,
-  interests: string[]
+  interests: string[],
+  googleCalendarAuthorized: boolean
 ): Promise<boolean> => {
   return firebaseApp
     .firestore()
     .collection("users")
     .doc(userId)
-    .set({ userId, displayName, email, phone, photoUrl, zipcode, interests })
+    .set({
+      userId,
+      displayName,
+      email,
+      phone,
+      photoUrl,
+      zipcode,
+      interests,
+      googleCalendarAuthorized,
+    })
     .then(() => true)
     .catch(logAndReturnFalse);
 };

@@ -14,6 +14,7 @@ export const createNewUserDatabaseObjects = (userData: {
   photoUrl: string;
   zipcode: string;
   interests: string[];
+  googleCalendarAuthorized: boolean;
 }): Promise<boolean> => {
   return ky
     .post(
