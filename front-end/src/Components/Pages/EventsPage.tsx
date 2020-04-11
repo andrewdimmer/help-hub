@@ -13,10 +13,17 @@ import {
 } from "@material-ui/core";
 import React, { Fragment } from "react";
 import { PageProps } from ".";
+import {
+  registerForEvent,
+  unregisterForEvent,
+} from "../../Scripts/firebaseEventRegistration";
 import { EventData } from "../../Scripts/firebaseEventTypes";
-import { getEventsWithinRadius } from "../../Scripts/firebaseGetEvents";
+import {
+  getEventsByUser,
+  getEventsWithinRadius,
+} from "../../Scripts/firebaseGetEvents";
 import categories from "../Content/Categories";
-import EventInfo from "../Layouts/EventInfo";
+import EventList from "../Layouts/EventList";
 
 const EventsPage: React.FunctionComponent<PageProps> = ({
   classes,
@@ -34,6 +41,8 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
   const [priorZip, setPriorZip] = React.useState<string>("zip");
   const [events, setEvents] = React.useState<EventData[] | null>(null);
   const [visibleEvents, setVisibleEvents] = React.useState<EventData[]>([]);
+  const [myFutureEvents, setMyFutureEvents] = React.useState<EventData[]>([]);
+  const [myPastEvents, setMyPastEvents] = React.useState<EventData[]>([]);
   const [gettingEvents, setGettingEvents] = React.useState<boolean>(false);
   const [selectedCategories, setSelectedCategories] = React.useState<string[]>(
     currentUserProfile?.interests
@@ -67,30 +76,42 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
     setFilterBoxOpen(false);
   };
 
-  const getPreviousEventDateString = (index: number) => {
-    if (index === 0 || events === null) {
-      return new Date("1970/01/01").toDateString();
-    } else {
-      return new Date(
-        `${events[index - 1].startDate} ${events[index - 1].startTime}`
-      ).toDateString();
-    }
-  };
-
-  const getEvents = () => {
+  const getUpcomingEvents = (callback?: () => void) => {
     if (!gettingEvents) {
       if (zip.length === 5 || zip.length === 6) {
         setPriorZip(zip);
         setPriorRadius(radius);
         setGettingEvents(true);
         setLoadingMessage("Getting Upcoming Events...");
-        getEventsWithinRadius(zip, radius).then((eventsData) => {
-          if (eventsData !== null) {
-            setEvents(eventsData);
-            filterByCategory(eventsData);
-            setLoadingMessage("");
-            setGettingEvents(false);
-          } else {
+        getEventsWithinRadius(zip, radius)
+          .then((eventsData) => {
+            if (eventsData !== null) {
+              setEvents(eventsData);
+              filterByCategory(eventsData);
+              if (callback) {
+                callback();
+              } else {
+                setLoadingMessage("");
+                setGettingEvents(false);
+              }
+            } else {
+              setNotification({
+                type: "error",
+                message:
+                  "Error getting events. Please check your filter settings or try again later.",
+                open: true,
+              });
+              setEvents([]);
+              if (callback) {
+                callback();
+              } else {
+                setLoadingMessage("");
+                setGettingEvents(false);
+              }
+            }
+          })
+          .catch((err) => {
+            console.log(err);
             setNotification({
               type: "error",
               message:
@@ -98,10 +119,13 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
               open: true,
             });
             setEvents([]);
-            setLoadingMessage("");
-            setGettingEvents(false);
-          }
-        });
+            if (callback) {
+              callback();
+            } else {
+              setLoadingMessage("");
+              setGettingEvents(false);
+            }
+          });
       } else {
         setNotification({
           type: "error",
@@ -110,7 +134,62 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
         });
         setEvents([]);
         handleOpenFilterBox();
+        if (callback) {
+          callback();
+        }
       }
+    }
+  };
+
+  const getUserEvents = () => {
+    if (currentUserProfile) {
+      setLoadingMessage("Getting Your Events...");
+      getEventsByUser(currentUserProfile.userId)
+        .then((userEventsData) => {
+          if (userEventsData) {
+            const todayDate = new Date();
+            let breakPoint = 0;
+            while (
+              breakPoint < userEventsData.length &&
+              new Date(
+                `${userEventsData[breakPoint].endDate} ${userEventsData[breakPoint].endTime}`
+              ) < todayDate
+            ) {
+              breakPoint++;
+            }
+            setMyPastEvents(userEventsData.slice(0, breakPoint));
+            setMyFutureEvents(userEventsData.slice(breakPoint));
+            setLoadingMessage("");
+            setGettingEvents(false);
+          } else {
+            setNotification({
+              type: "warning",
+              message: "Error getting your events. Please try again later.",
+              open: true,
+            });
+            setLoadingMessage("");
+            setGettingEvents(false);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+          setNotification({
+            type: "warning",
+            message: "Error getting your events. Please try again later.",
+            open: true,
+          });
+          setLoadingMessage("");
+          setGettingEvents(false);
+        });
+    } else {
+      setNotification({
+        type: "warning",
+        message:
+          "Unable to get your events. Try signing out and signing back in.",
+        open: true,
+      });
+      setLoadingMessage("");
+      setGettingEvents(false);
     }
   };
 
@@ -134,7 +213,7 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
 
   const handleFilterEvents = () => {
     if (zip !== priorZip || radius !== priorRadius) {
-      getEvents();
+      getUpcomingEvents(getUserEvents);
     } else {
       if (events) {
         filterByCategory(events);
@@ -143,14 +222,111 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
     handleCloseFilterBox();
   };
 
+  const handleRegistration = (eventId: string) => {
+    if (currentUserProfile) {
+      setLoadingMessage("Registering...");
+      registerForEvent(currentUserProfile.userId, eventId)
+        .then((userEventsData) => {
+          if (userEventsData) {
+            setNotification({
+              type: "success",
+              message: "Event Registration Successful",
+              open: true,
+            });
+            getUpcomingEvents(getUserEvents);
+          } else {
+            setNotification({
+              type: "warning",
+              message:
+                "Unable to register you for the event. Please try again later.",
+              open: true,
+            });
+            setLoadingMessage("");
+          }
+        })
+        .catch((err) => {
+          setNotification({
+            type: "warning",
+            message:
+              "Unable to register you for the event. Please try again later.",
+            open: true,
+          });
+          setLoadingMessage("");
+        });
+    } else {
+      setNotification({
+        type: "warning",
+        message:
+          "Unable to register you for the event. Try signing out and signing back in.",
+        open: true,
+      });
+    }
+  };
+
+  const handleUnregistration = (eventId: string) => {
+    if (currentUserProfile) {
+      setLoadingMessage("Unregistering...");
+      unregisterForEvent(currentUserProfile.userId, eventId)
+        .then((userEventsData) => {
+          if (userEventsData) {
+            setNotification({
+              type: "success",
+              message: "Event Unregistration Successful",
+              open: true,
+            });
+            getUpcomingEvents(getUserEvents);
+          } else {
+            setNotification({
+              type: "warning",
+              message:
+                "Unable to unregister you from the event. Please try again later.",
+              open: true,
+            });
+            setLoadingMessage("");
+          }
+        })
+        .catch((err) => {
+          setNotification({
+            type: "warning",
+            message:
+              "Unable to unregister you from the event. Please try again later.",
+            open: true,
+          });
+          setLoadingMessage("");
+        });
+    } else {
+      setNotification({
+        type: "warning",
+        message:
+          "Unable to unregister you from the event. Try signing out and signing back in.",
+        open: true,
+      });
+    }
+  };
+
   if (events === null) {
-    setTimeout(getEvents, 1);
+    setTimeout(() => {
+      setGettingEvents(true);
+      getUpcomingEvents(getUserEvents);
+    }, 1);
   }
 
   return (
     <Fragment>
+      {myFutureEvents.length > 0 && (
+        <Fragment>
+          <Container className={classes.pageTitle}>
+            <Typography variant="h3">My Upcoming Events</Typography>
+          </Container>
+          <EventList
+            events={myFutureEvents}
+            classes={classes}
+            unregistrationFunction={handleUnregistration}
+          />
+        </Fragment>
+      )}
       <Container className={classes.pageTitle}>
-        <Typography variant="h3">Volunteer Here!</Typography>
+        <Typography variant="h3">Upcoming Events</Typography>
       </Container>
       <Button
         color="primary"
@@ -169,57 +345,19 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
           </Typography>
         </Container>
       )}
-      {visibleEvents.length > 0 &&
-        visibleEvents.map(
-          (
-            {
-              eventId,
-              eventName,
-              eventDescription,
-              eventContactInfo,
-              categories,
-              startDate,
-              startTime,
-              endDate,
-              endTime,
-              address,
-              city,
-              state,
-              zip,
-            },
-            index
-          ) => {
-            const eventStartDateString = new Date(
-              `${startDate} ${startTime}`
-            ).toDateString();
-            return (
-              <Fragment key={eventId}>
-                {eventStartDateString !== getPreviousEventDateString(index) && (
-                  <Container>
-                    <Typography variant="h4">{eventStartDateString}</Typography>
-                  </Container>
-                )}
-                <EventInfo
-                  eventName={eventName}
-                  eventDesciption={eventDescription}
-                  eventDateTime={`${startDate} ${startTime} - ${endDate} ${endTime}`}
-                  eventContact={eventContactInfo}
-                  eventCategories={
-                    categories.length > 0
-                      ? categories.toString().replace(/,/g, ", ")
-                      : "Uncategorized"
-                  }
-                  eventLocation={`${address}, ${city}, ${state} ${zip}`}
-                  classes={classes}
-                  number={index}
-                  events={visibleEvents}
-                  setEvents={setVisibleEvents}
-                  setNotification={setNotification}
-                />
-              </Fragment>
-            );
-          }
-        )}
+      <EventList
+        events={visibleEvents}
+        classes={classes}
+        registrationFunction={handleRegistration}
+      />
+      {myPastEvents.length > 0 && (
+        <Fragment>
+          <Container className={classes.pageTitle}>
+            <Typography variant="h3">My Previous Events</Typography>
+          </Container>
+          <EventList events={myPastEvents} classes={classes} />
+        </Fragment>
+      )}
 
       <Dialog
         open={filterBoxOpen}

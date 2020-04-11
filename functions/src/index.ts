@@ -17,6 +17,7 @@ import {
   testZipcodeFunctions,
 } from "./ZipCodes/testGetZipCodesWithinRadius";
 import { getEventsByUser } from "./Firebase/Events/getEventsByUser";
+import { registerForEvent } from "./Firebase/Events/registerForEvent";
 
 // Start writing Firebase Functions
 // https://firebase.google.com/docs/functions/typescript
@@ -45,6 +46,8 @@ export const get_user_profile_database = getUserProfileDatabaseObject;
 export const get_events_within_radius = getEventsWithinRadius;
 export const get_events_by_user = getEventsByUser;
 
+// Register and Unregister for Events
+export const register_for_event = registerForEvent;
 // Unit Tests and Validation
 export const test_information_mappings = testInformationMappings;
 export const test_zipcode_functions = testZipcodeFunctions;

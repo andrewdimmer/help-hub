@@ -1,83 +1,79 @@
 import { Button, Card, Container, Grid, Typography } from "@material-ui/core";
 import React from "react";
-import { NotificationMessage } from "../Misc/Notifications";
+import { EventData } from "../../Scripts/firebaseEventTypes";
 
 interface EventInfoProps {
-  eventName: string;
-  eventDesciption: string;
-  eventDateTime: string;
-  eventLocation: string;
-  eventContact: string;
-  eventCategories: string;
   classes: any;
-  number: number;
-  events: any[];
-  setEvents: (events: any[]) => void;
-  setNotification: (notification: NotificationMessage) => void;
+  eventData: EventData;
+  registrationFunction?: (eventId: string) => void;
+  unregistrationFunction?: (eventId: string) => void;
 }
 
 const EventInfo: React.FunctionComponent<EventInfoProps> = ({
-  eventName,
-  eventDesciption,
-  eventDateTime,
-  eventLocation,
-  eventContact,
-  eventCategories,
   classes,
-  number,
-  events,
-  setEvents,
-  setNotification,
+  eventData,
+  registrationFunction,
+  unregistrationFunction,
 }) => {
   return (
-    <div className="App">
-      <Container className={classes.margined}>
-        <Card
-          style={{
-            padding: "1.5%",
-          }}
-        >
-          <Grid container direction="row" alignItems="center">
-            <Grid item sm={10} xs={12}>
-              <Typography variant="h5">{eventName}</Typography>
-              <Typography variant="h6" noWrap={true}>
-                Description: {eventDesciption}
-              </Typography>
-              <Typography variant="subtitle1" noWrap={true}>
-                Organizer Contact Information: {eventContact}
-              </Typography>
-              <Typography variant="subtitle1" noWrap={true}>
-                Categories: {eventCategories}
-              </Typography>
-              <Typography variant="body2">
-                <em>{eventDateTime}</em>
-              </Typography>
-              <Typography variant="body2">
-                <em>{eventLocation}</em>
-              </Typography>
-            </Grid>
+    <Container className={classes.margined}>
+      <Card
+        style={{
+          padding: "1.5%",
+        }}
+      >
+        <Grid container direction="row" alignItems="center">
+          <Grid
+            item
+            sm={registrationFunction || unregistrationFunction ? 10 : 12}
+            xs={12}
+          >
+            <Typography variant="h5">{eventData.eventName}</Typography>
+            <Typography variant="h6" noWrap={true}>
+              Description: {eventData.eventDescription}
+            </Typography>
+            <Typography variant="subtitle1" noWrap={true}>
+              Organizer Contact Information: {eventData.eventContactInfo}
+            </Typography>
+            <Typography variant="subtitle1" noWrap={true}>
+              Categories:{" "}
+              {eventData.categories.length > 0
+                ? eventData.categories.toString().replace(/,/g, ", ")
+                : "Uncategorized"}
+            </Typography>
+            <Typography variant="body1">
+              <em>{`${eventData.startDate} ${eventData.startTime} - ${eventData.endDate} ${eventData.endTime}`}</em>
+            </Typography>
+            <Typography variant="body1">
+              <em>{`${eventData.address}, ${eventData.city}, ${eventData.state} ${eventData.zip}`}</em>
+            </Typography>
+          </Grid>
+          {(registrationFunction || unregistrationFunction) && (
             <Grid item sm={2} xs={12}>
               <Button
                 variant="contained"
                 color="primary"
-                onClick={() => {
-                  const newEvents = events.concat([]);
-                  newEvents.splice(number, 1);
-                  setEvents(newEvents);
-                  setNotification({
-                    type: "success",
-                    message: "Registration Successful!",
-                    open: true,
-                  });
-                }}
+                onClick={
+                  registrationFunction
+                    ? () => {
+                        registrationFunction(eventData.eventId);
+                      }
+                    : unregistrationFunction
+                    ? () => {
+                        unregistrationFunction(eventData.eventId);
+                      }
+                    : () => {}
+                }
               >
-                Sign Up to Volunteer
+                {registrationFunction
+                  ? "Register to Volunteer"
+                  : "Unregister from Volunteering"}
               </Button>
             </Grid>
-          </Grid>
-        </Card>
-      </Container>
-    </div>
+          )}
+        </Grid>
+      </Card>
+    </Container>
   );
 };
 
