@@ -5,7 +5,7 @@ import { PageProps } from ".";
 
 const HomePage: React.FunctionComponent<PageProps> = ({
   currentUser,
-  setPageKey
+  setPageKey,
 }) => {
   const classes = styles();
 

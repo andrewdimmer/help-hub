@@ -9,6 +9,9 @@ import {
   Tabs,
   Tab,
 } from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
+import PeopleIcon from '@material-ui/icons/People';
 
 interface FromProps {
   eventName: string;
@@ -68,13 +71,13 @@ const EventOrg: React.FunctionComponent<FromProps> = ({
             </Grid>
             <Grid item sm={2} xs={12}>
               <Button variant="contained" color="primary">
-                Edit
+                <EditIcon></EditIcon>
               </Button>
               <Button variant="contained" color="primary">
-                Volunteers
+                <PeopleIcon></PeopleIcon>
               </Button>
               <Button variant="contained" color="secondary">
-                Delete
+                <DeleteIcon></DeleteIcon>
               </Button>
             </Grid>
           </Grid>
