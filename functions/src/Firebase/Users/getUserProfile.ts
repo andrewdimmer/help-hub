@@ -23,7 +23,8 @@ export const getUserProfileDatabaseObject = functions.https.onRequest(
               phoneNumber: data.phone,
               photoURL: data.photoUrl,
               zipcode: data.zipcode,
-              interest: data.interests,
+              interests: data.interests,
+              googleCalendarAuthorized: data.googleCalendarAuthorized,
             })
           );
         } else {

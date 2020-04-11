@@ -26,9 +26,6 @@ const ViewEditUserInterests: React.FunctionComponent<PageProps> = ({
   );
   const [editing, setEditing] = React.useState(!interests);
 
-  console.log(currentUserProfile);
-  console.log(interests);
-
   const startEditing = () => {
     setEditing(true);
   };
