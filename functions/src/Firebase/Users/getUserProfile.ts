@@ -24,7 +24,7 @@ export const getUserProfileDatabaseObject = functions.https.onRequest(
               phoneNumber: data.phone,
               photoURL: data.photoUrl,
               zipcode: data.zipcode,
-              interests: data.interests,
+              interest: data.interests,
             })
           );
         } else {
@@ -72,7 +72,9 @@ export const getUserOrganizations = functions.https.onRequest(
               resultsData.push(result);
             }
           }
-          response.status(200).send({ organizations: resultsData });
+          response
+            .status(200)
+            .send(JSON.stringify({ organizations: resultsData }));
         });
         console.log(promises);
       });

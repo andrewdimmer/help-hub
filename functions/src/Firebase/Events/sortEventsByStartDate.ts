@@ -1,7 +1,7 @@
 import { EventData } from "./eventTypes";
 
 export const sortEventsByStartDate = (events: EventData[]): EventData[] => {
-  if (events.length === 1) {
+  if (events.length <= 1) {
     return events;
   }
   const leftArray = sortEventsByStartDate(events.slice(0, events.length / 2));
