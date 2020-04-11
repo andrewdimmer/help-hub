@@ -5,6 +5,7 @@ import { getEventsByUser } from "./Firebase/Events/getEventsByUser";
 import { getEventsWithinRadius } from "./Firebase/Events/getEventsWithinRadius";
 import { registerForEvent } from "./Firebase/Events/registerForEvent";
 import { unregisterForEvent } from "./Firebase/Events/unregisterForEvent";
+import { createNewOrganization } from "./Firebase/Organizations/createNewOrganization";
 import { createNewUserDatabaseObjects } from "./Firebase/Users/createNewUser";
 import { getUserProfileDatabaseObject } from "./Firebase/Users/getUserProfile";
 import { testInformationMappings } from "./Firebase/Users/testInformationMappings";
@@ -30,6 +31,9 @@ export const helloWorld = functions.https.onRequest((request, response) => {
 // Create New Users
 export const create_new_user = createNewUserDatabaseObjects;
 
+// Get User Profile Data
+export const get_user_profile_database = getUserProfileDatabaseObject;
+
 // Update Users
 export const update_display_name_database = updateDisplayNameDatabase;
 export const update_email_database = updateEmailDatabase;
@@ -41,9 +45,6 @@ export const update_interests_database = updateInterestsDatabase;
 // Create New Event Groups
 export const create_new_event_group = createNewEventGroup;
 
-// Get User Profile Data
-export const get_user_profile_database = getUserProfileDatabaseObject;
-
 // Get Events
 export const get_events_within_radius = getEventsWithinRadius;
 export const get_events_by_user = getEventsByUser;
@@ -52,6 +53,9 @@ export const get_events_by_organization = getEventsByOrganization;
 // Register and Unregister for Events
 export const register_for_event = registerForEvent;
 export const unregister_for_event = unregisterForEvent;
+
+// Create New Organization
+export const create_new_organization = createNewOrganization;
 
 // Unit Tests and Validation
 export const test_information_mappings = testInformationMappings;
