@@ -6,7 +6,7 @@ export const updateOrganizationNameDatabase = (
 ): Promise<boolean> => {
   return ky
     .post(
-      "https://us-central1-cathacksvi-gcp.cloudfunctions.net/update_organization_name_database",
+      "https://us-central1-cathacksvi-gcp.cloudfunctions.net/update_organization_name",
       {
         body: JSON.stringify({ organizationId, newOrganizationName }),
       }
@@ -34,7 +34,7 @@ export const updateOrganizationDescriptionDatabase = (
 ): Promise<boolean> => {
   return ky
     .post(
-      "https://us-central1-cathacksvi-gcp.cloudfunctions.net/update_organization_description_database",
+      "https://us-central1-cathacksvi-gcp.cloudfunctions.net/update_organization_description",
       {
         body: JSON.stringify({ organizationId, newOrganizationDescription }),
       }
@@ -58,13 +58,13 @@ export const updateOrganizationDescriptionDatabase = (
 
 export const updateOrganizationEmailDatabase = (
   organizationId: string,
-  newOrganizationEmail: string
+  newEmail: string
 ): Promise<boolean> => {
   return ky
     .post(
-      "https://us-central1-cathacksvi-gcp.cloudfunctions.net/update_organization_email_database",
+      "https://us-central1-cathacksvi-gcp.cloudfunctions.net/update_organization_email",
       {
-        body: JSON.stringify({ organizationId, newOrganizationEmail }),
+        body: JSON.stringify({ organizationId, newEmail }),
       }
     )
     .then((results) =>
@@ -86,13 +86,41 @@ export const updateOrganizationEmailDatabase = (
 
 export const updateOrganizationPhoneDatabase = (
   organizationId: string,
-  newOrganizationPhone: string
+  newPhone: string
 ): Promise<boolean> => {
   return ky
     .post(
-      "https://us-central1-cathacksvi-gcp.cloudfunctions.net/update_organization_phone_database",
+      "https://us-central1-cathacksvi-gcp.cloudfunctions.net/update_organization_phone",
       {
-        body: JSON.stringify({ organizationId, newOrganizationPhone }),
+        body: JSON.stringify({ organizationId, newPhone }),
+      }
+    )
+    .then((results) =>
+      results
+        .text()
+        .then(
+          (text) => text.length === "true".length && text.indexOf("true") === 0
+        )
+        .catch((err) => {
+          console.log(err);
+          return false;
+        })
+    )
+    .catch((err) => {
+      console.log(err);
+      return false;
+    });
+};
+
+export const updateOrganizationPhotoUrlDatabase = (
+  organizationId: string,
+  newPhotoUrl: string
+): Promise<boolean> => {
+  return ky
+    .post(
+      "https://us-central1-cathacksvi-gcp.cloudfunctions.net/update_organization_photo_url",
+      {
+        body: JSON.stringify({ organizationId, newPhotoUrl }),
       }
     )
     .then((results) =>

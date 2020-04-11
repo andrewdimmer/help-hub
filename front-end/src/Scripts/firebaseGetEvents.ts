@@ -1,5 +1,9 @@
 import ky from "ky";
-import { EventData, EventDataWithCount } from "./firebaseEventTypes";
+import {
+  EventData,
+  EventDataWithCount,
+  EventDataWithVolunteers,
+} from "./firebaseEventTypes";
 
 export const getEventsWithinRadius = (
   zipcode: string,
@@ -35,6 +39,31 @@ export const getEventsByUser = (
       "https://us-central1-cathacksvi-gcp.cloudfunctions.net/get_events_by_user",
       {
         body: userId,
+      }
+    )
+    .then((results) =>
+      results
+        .json()
+        .then((json) => json.events)
+        .catch((err) => {
+          console.log(err);
+          return null;
+        })
+    )
+    .catch((err) => {
+      console.log(err);
+      return null;
+    });
+};
+
+export const getEventsByOrganization = (
+  organizationId: string
+): Promise<EventDataWithVolunteers[] | null> => {
+  return ky
+    .post(
+      "https://us-central1-cathacksvi-gcp.cloudfunctions.net/get_events_by_organization",
+      {
+        body: organizationId,
       }
     )
     .then((results) =>

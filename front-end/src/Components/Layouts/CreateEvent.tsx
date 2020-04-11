@@ -10,16 +10,25 @@ import {
 } from "@material-ui/core";
 import { nanoid } from "nanoid";
 import React, { Fragment } from "react";
-import { PageProps } from ".";
 import { createNewEventGroup } from "../../Scripts/firebaseCreateNewEvent";
 import categories from "../Content/Categories";
 import DateTime from "../Layouts/DateTime";
+import { NotificationMessage } from "../Misc/Notifications";
 
-const CreateEvent: React.FunctionComponent<PageProps> = ({
-  currentUserProfile,
+declare interface CreateEventProps {
+  organizationId: string;
+  setNotification: (notification: NotificationMessage) => void;
+  setLoadingMessage: (loadingMessage: string) => void;
+  getOrganizationEvents: () => void;
+  handleClose: () => void;
+}
+
+const CreateEvent: React.FunctionComponent<CreateEventProps> = ({
+  organizationId,
   setNotification,
-  handleLoadUserData,
   setLoadingMessage,
+  getOrganizationEvents,
+  handleClose,
 }) => {
   const [eventName, setEventName] = React.useState<string>("");
   const [eventDescription, setEventDescription] = React.useState<string>("");
@@ -203,41 +212,55 @@ const CreateEvent: React.FunctionComponent<PageProps> = ({
 
   const saveEvent = () => {
     if (validateDataBeforeSave()) {
-      setLoadingMessage(`Creating Event${dateTimes.length > 1 ? "s" : ""}...`);
-      createNewEventGroup({
-        organizationId: currentUserProfile?.userId
-          ? currentUserProfile.userId
-          : nanoid(),
-        eventGroupId: nanoid(),
-        eventName,
-        eventDescription,
-        eventContactInfo,
-        events: dateTimes.map((dateTime) => {
-          return { ...dateTime, eventId: nanoid() };
-        }),
-        categories: categorySelections,
-      })
-        .then(() => {
-          handleClearData();
-          setNotification({
-            type: "success",
-            message: `Event${
-              dateTimes.length > 1 ? "s" : ""
-            } Created Successfully!`,
-            open: true,
-          });
-          setLoadingMessage("");
+      if (organizationId) {
+        setLoadingMessage(
+          `Creating Event${dateTimes.length > 1 ? "s" : ""}...`
+        );
+        createNewEventGroup({
+          organizationId,
+          eventGroupId: nanoid(),
+          eventName,
+          eventDescription,
+          eventContactInfo,
+          events: dateTimes.map((dateTime) => {
+            return { ...dateTime, eventId: nanoid() };
+          }),
+          categories: categorySelections,
         })
-        .catch((err) => {
-          setNotification({
-            type: "error",
-            message: `An error occured while creating event${
-              dateTimes.length > 1 ? "s" : ""
-            }. Please try again later.`,
-            open: true,
+          .then(() => {
+            handleClearData();
+            setNotification({
+              type: "success",
+              message: `Event${
+                dateTimes.length > 1 ? "s" : ""
+              } Created Successfully!`,
+              open: true,
+            });
+            setLoadingMessage("Updating Events...");
+            setTimeout(() => {
+              getOrganizationEvents();
+            }, 7000); //TODO: Fix this in the future to reduce delay
+            handleClearData();
+          })
+          .catch((err) => {
+            setNotification({
+              type: "error",
+              message: `An error occured while creating event${
+                dateTimes.length > 1 ? "s" : ""
+              }. Please try again later.`,
+              open: true,
+            });
+            setLoadingMessage("");
           });
-          setLoadingMessage("");
+      } else {
+        setNotification({
+          type: "error",
+          message: `An error occured while creating event${
+            dateTimes.length > 1 ? "s" : ""
+          }. Try signing out and signing back in.`,
+          open: true,
         });
+      }
     }
   };
 
@@ -376,6 +399,7 @@ const CreateEvent: React.FunctionComponent<PageProps> = ({
         },
       ],
     });
+    handleClose();
   };
 
   return (

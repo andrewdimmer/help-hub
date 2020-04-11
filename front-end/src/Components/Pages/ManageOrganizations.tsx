@@ -1,20 +1,13 @@
-import {
-  Button,
-  Checkbox,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControlLabel,
-  Grid,
-  TextField,
-  Typography,
-} from "@material-ui/core";
+import { Button, Container, Typography } from "@material-ui/core";
+import { nanoid } from "nanoid";
 import React, { Fragment } from "react";
 import { PageProps } from ".";
-import Organization from "../Layouts/Organization";
+import { createNewOrganization } from "../../Scripts/firebaseCreateNewOrganization";
+import { getOrganizationsByUser } from "../../Scripts/firebaseGetOrganizations";
+import { OrganizationDataWithManagers } from "../../Scripts/firebaseOrganizationTypes";
 import EditOrganization from "../Layouts/EditOrganization";
+import Organization from "../Layouts/Organization";
+import OrganizationEvents from "../Layouts/OrganizationEvents";
 
 const ManageOrganizations: React.FunctionComponent<PageProps> = ({
   classes,
@@ -22,64 +15,204 @@ const ManageOrganizations: React.FunctionComponent<PageProps> = ({
   setNotification,
   setLoadingMessage,
 }) => {
-  const [editOrganizationData, setEditOrganizationData] = React.useState(null);
-  const [eventOrganizationId, setEventOrganizationId] = React.useState(null);
+  const [editOrganizationId, setEditOrganizationId] = React.useState<string>(
+    ""
+  );
+  const [eventOrganizationId, setEventOrganizationId] = React.useState<string>(
+    ""
+  );
+  const [organizations, setOrganizations] = React.useState<
+    OrganizationDataWithManagers[] | null
+  >(null);
+  const [gettingOrganizations, setGettingOrganizations] = React.useState<
+    boolean
+  >(false);
 
-  const handleLoadOrganizationData = () => {};
+  const getUserOrganizations = () => {
+    if (!gettingOrganizations) {
+      if (currentUserProfile) {
+        setGettingOrganizations(true);
+        setLoadingMessage("Getting Your Organizations...");
+        getOrganizationsByUser(currentUserProfile.userId)
+          .then((userOrganizations) => {
+            if (userOrganizations) {
+              setOrganizations(userOrganizations);
+              setLoadingMessage("");
+              setGettingOrganizations(false);
+            } else {
+              setNotification({
+                type: "warning",
+                message:
+                  "Error getting your organizations. Please try again later.",
+                open: true,
+              });
+              setLoadingMessage("");
+              setGettingOrganizations(false);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            setNotification({
+              type: "warning",
+              message:
+                "Error getting your organizations. Please try again later.",
+              open: true,
+            });
+            setLoadingMessage("");
+            setGettingOrganizations(false);
+          });
+      } else {
+        setNotification({
+          type: "warning",
+          message:
+            "Unable to get your organizations. Try signing out and signing back in.",
+          open: true,
+        });
+        setLoadingMessage("");
+        setGettingOrganizations(false);
+      }
+    }
+  };
 
-  const [organizations, setOrganizations] = React.useState([
-    {
-      photoUrl:
-        "https://www.himalmag.com/wp-content/uploads/2019/07/sample-profile-picture.png",
-      organizationEmail: "email@email.com",
-      organizationPhone: "(123) 456-7890",
-      organizationId: "1",
-      organizationName: "CIDL",
-      organizationDescription: "We do book things",
-    },
-    {
-      photoUrl:
-        "https://i.pinimg.com/280x280_RS/df/a1/d1/dfa1d1e16805eb82a18f83641e08fc09.jpg",
-      organizationEmail: "email@email.com",
-      organizationPhone: "(123) 456-7890",
-      organizationId: "2",
-      organizationName: "Creations Unleashed",
-      organizationDescription: "Bringing new life to old kits",
-    },
-    {
-      photoUrl:
-        "https://pbs.twimg.com/profile_images/1092454427049578499/SMRmdbPX_400x400.jpg",
-      organizationEmail: "email@email.com",
-      organizationPhone: "(123) 456-7890",
-      organizationId: "3",
-      organizationName: "Sesame Street",
-      organizationDescription: "A hit PBS Kids show",
-    },
-  ]);
+  const handleLoadOrganizationData = () => {
+    getUserOrganizations();
+  };
+
+  const getOrganizationDataFromId = (
+    organizationId: string,
+    organizations: OrganizationDataWithManagers[] | null
+  ): OrganizationDataWithManagers => {
+    if (organizations) {
+      for (const organization of organizations) {
+        if (organization.organizationId === organizationId) {
+          return organization;
+        }
+      }
+    }
+    return {
+      organizationId: "",
+      organizationName: "",
+      organizationDescription: "",
+      email: "",
+      phone: "",
+      photoUrl: "",
+      managers: [],
+    };
+  };
+
+  const createOrganization = () => {
+    if (currentUserProfile) {
+      setLoadingMessage("Creating New Organization...");
+      const organizationId = nanoid();
+      createNewOrganization(currentUserProfile.userId, {
+        organizationId,
+        organizationName: "",
+        organizationDescription: "",
+        email: "",
+        phone: "",
+        photoUrl: "",
+      })
+        .then((value) => {
+          if (value) {
+            setNotification({
+              type: "info",
+              message:
+                "Almost there! Please complete the form below to finish creating your organization.",
+              open: true,
+            });
+            setEditOrganizationId(organizationId);
+            handleLoadOrganizationData();
+            setLoadingMessage("");
+          } else {
+            setNotification({
+              type: "error",
+              message:
+                "Unable to finish creating your organization. Please try again later.",
+              open: true,
+            });
+            setLoadingMessage("");
+          }
+        })
+        .catch((err) => {
+          setNotification({
+            type: "error",
+            message:
+              "Unable to finish creating your organization. Please try again later.",
+            open: true,
+          });
+          setLoadingMessage("");
+        });
+    } else {
+      setNotification({
+        type: "error",
+        message:
+          "Unable to finish creating your organization. Try signing out and signing back in.",
+        open: true,
+      });
+    }
+  };
+
+  if (organizations === null) {
+    setTimeout(() => {
+      setGettingOrganizations(true);
+      getUserOrganizations();
+    }, 1);
+  }
+
   return (
     <Fragment>
       <Container className={classes.pageTitle}>
         <Typography variant="h3">Manage Organizations</Typography>
       </Container>
-      {organizations.map((value, index) => {
-        return (
-          <Organization
-            setNotification={setNotification}
-            setEventOrgId={setEventOrganizationId}
-            setEditOrganizationData={setEditOrganizationData}
-            organizationData={organizations[index]}
-            classes={classes}
-          ></Organization>
-        );
-      })}
-      <EditOrganization
-        currentOrganizationData={editOrganizationData}
-        setNotification={setNotification}
-        setLoadingMessage={setLoadingMessage}
-        setCurrentOrganizationData={setEditOrganizationData}
-        handleLoadOrganizationData={handleLoadOrganizationData}
-        classes={classes}
-      ></EditOrganization>
+      {organizations !== null &&
+        organizations.map((value, index) => {
+          return (
+            <Organization
+              setNotification={setNotification}
+              setEditOrganizationId={setEditOrganizationId}
+              setEventOrganizationId={setEventOrganizationId}
+              organizationData={value}
+              key={value.organizationId}
+              classes={classes}
+            ></Organization>
+          );
+        })}
+      <Container className={classes.pageTitle}>
+        <Typography variant="h3">Create New Organizations</Typography>
+      </Container>
+      <Button
+        color="primary"
+        fullWidth
+        variant="contained"
+        size="large"
+        className={classes.margined}
+        onClick={createOrganization}
+      >
+        <Typography variant="h4">Create a New Organization</Typography>
+      </Button>
+      {editOrganizationId.length > 0 && (
+        <EditOrganization
+          currentOrganizationId={editOrganizationId}
+          currentOrganizationData={getOrganizationDataFromId(
+            editOrganizationId,
+            organizations
+          )}
+          setNotification={setNotification}
+          setLoadingMessage={setLoadingMessage}
+          setCurrentOrganizationId={setEditOrganizationId}
+          handleLoadOrganizationData={handleLoadOrganizationData}
+          classes={classes}
+        ></EditOrganization>
+      )}
+      {eventOrganizationId.length > 0 && (
+        <OrganizationEvents
+          currentOrganizationId={eventOrganizationId}
+          setNotification={setNotification}
+          setLoadingMessage={setLoadingMessage}
+          setCurrentOrganizationId={setEventOrganizationId}
+          classes={classes}
+        />
+      )}
     </Fragment>
   );
 };

@@ -1,34 +1,32 @@
 import {
-  Button,
-  Card,
+  Avatar,
   Container,
-  Grid,
-  Typography,
+  Fab,
   ListItem,
   ListItemAvatar,
-  Avatar,
   ListItemText,
-  Fab,
-  makeStyles,
   Paper,
+  Typography,
 } from "@material-ui/core";
-import React, { Fragment } from "react";
-import { NotificationMessage } from "../Misc/Notifications";
+import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import EventIcon from "@material-ui/icons/Event";
-import DeleteIcon from "@material-ui/icons/Delete";
-interface EventInfoProps {
-  organizationData: any;
-  setEventOrgId: Function;
-  setEditOrganizationData: Function;
+import React, { Fragment } from "react";
+import { NotificationMessage } from "../Misc/Notifications";
+import { OrganizationDataWithManagers } from "../../Scripts/firebaseOrganizationTypes";
+
+declare interface EventInfoProps {
+  organizationData: OrganizationDataWithManagers;
+  setEditOrganizationId: (organizationId: string) => void;
+  setEventOrganizationId: (organizationId: string) => void;
   setNotification: (notification: NotificationMessage) => void;
   classes: any;
 }
 
 const Organization: React.FunctionComponent<EventInfoProps> = ({
   setNotification,
-  setEditOrganizationData,
-  setEventOrgId,
+  setEditOrganizationId,
+  setEventOrganizationId,
   organizationData,
   classes,
 }) => {
@@ -63,7 +61,7 @@ const Organization: React.FunctionComponent<EventInfoProps> = ({
                     variant="subtitle2"
                     color="textPrimary"
                   >
-                    <em>Phone: {organizationData.organizationPhone}</em>
+                    <em>Phone: {organizationData.phone}</em>
                   </Typography>
                   <br />
                   <Typography
@@ -71,7 +69,7 @@ const Organization: React.FunctionComponent<EventInfoProps> = ({
                     variant="subtitle2"
                     color="textPrimary"
                   >
-                    <em>Email: {organizationData.organizationEmail}</em>
+                    <em>Email: {organizationData.email}</em>
                   </Typography>
                 </Fragment>
               }
@@ -84,7 +82,7 @@ const Organization: React.FunctionComponent<EventInfoProps> = ({
                 //   message: "Under construction",
                 //   open: true,
                 // });
-                setEditOrganizationData(organizationData);
+                setEditOrganizationId(organizationData.organizationId);
               }}
               className={classes.margined}
             >
@@ -98,7 +96,7 @@ const Organization: React.FunctionComponent<EventInfoProps> = ({
                 //   message: "Under construction",
                 //   open: true,
                 // });
-                setEventOrgId(organizationData.organizationId);
+                setEventOrganizationId(organizationData.organizationId);
               }}
               className={classes.margined}
             >
