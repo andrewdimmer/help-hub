@@ -238,7 +238,10 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
               message: "Event Registration Successful",
               open: true,
             });
-            getUpcomingEvents(getUserEvents);
+            setLoadingMessage("Updating Events...");
+            setTimeout(() => {
+              getUpcomingEvents(getUserEvents);
+            }, 7000); //TODO: Fix this in the future to reduce delay
           } else {
             setNotification({
               type: "warning",
@@ -279,7 +282,10 @@ const EventsPage: React.FunctionComponent<PageProps> = ({
               message: "Event Unregistration Successful",
               open: true,
             });
-            getUpcomingEvents(getUserEvents);
+            setLoadingMessage("Updating Events...");
+            setTimeout(() => {
+              getUpcomingEvents(getUserEvents);
+            }, 7000); //TODO: Fix this in the future to reduce delay
           } else {
             setNotification({
               type: "warning",
